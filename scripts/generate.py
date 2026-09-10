@@ -434,147 +434,204 @@ def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 
 
 def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "Newsletter Financiera") -> str:
     css = """
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
 :root {
-  --bg: #f6f7f9;
+  --bg: #ffffff;
+  --surface: #fafafa;
   --card: #ffffff;
   --text: #1f2937;
-  --muted: #6b7280;
-  --accent: #0f766e;
-  --accent-light: #ccfbf1;
+  --text-muted: #6b7280;
+  --text-light: #9ca3af;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
   --border: #e5e7eb;
-  --radius: 14px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.05);
-  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-head: 'Playfair Display', Georgia, "Times New Roman", serif;
 }
+
 * { box-sizing: border-box; }
+
 body {
   margin: 0;
-  font-family: var(--font);
-  background: var(--bg);
+  font-family: var(--font-body);
+  background: var(--surface);
   color: var(--text);
-  line-height: 1.55;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
+
 .container {
-  max-width: 760px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 32px 20px 60px;
+  padding: 48px 24px 64px;
 }
-header {
+
+header.top {
   text-align: center;
-  padding: 28px 0 36px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
 }
-header h1 {
-  margin: 0;
-  font-size: 2.2rem;
-  letter-spacing: -0.5px;
-  color: var(--text);
-}
-header p {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 1.05rem;
-}
-.badge {
+
+header.top .kicker {
   display: inline-block;
-  background: var(--accent);
-  color: white;
+  color: var(--accent);
   font-size: 0.7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  padding: 5px 10px;
-  border-radius: 999px;
-  margin-bottom: 14px;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
 }
+
+header.top h1 {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+header.top .subtitle {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+header.top .meta-line {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
 .date-section {
-  margin-bottom: 42px;
+  margin-bottom: 56px;
 }
+
 .date-header {
   display: flex;
   align-items: baseline;
-  gap: 12px;
-  margin: 0 0 18px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid var(--border);
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 28px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--text);
 }
+
 .date-header h2 {
   margin: 0;
-  font-size: 1.35rem;
+  font-family: var(--font-head);
+  font-size: 1.5rem;
   font-weight: 700;
 }
+
 .date-header .count {
-  color: var(--muted);
-  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
 }
+
 .category {
-  margin-bottom: 22px;
+  margin-bottom: 36px;
 }
+
 .category h3 {
-  margin: 0 0 12px;
-  font-size: 0.8rem;
+  margin: 0 0 18px;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   color: var(--accent);
+  padding: 6px 10px;
+  background: var(--accent-soft);
+  display: inline-block;
+  border-radius: 6px;
 }
+
 .card {
   background: var(--card);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 18px 20px;
-  margin-bottom: 14px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  padding: 22px 24px;
+  margin-bottom: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid var(--border);
 }
+
 .card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
+
 .card a.title {
   display: block;
   text-decoration: none;
   color: var(--text);
-  font-size: 1.05rem;
+  font-family: var(--font-head);
+  font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   line-height: 1.35;
 }
+
 .card a.title:hover {
   color: var(--accent);
 }
+
 .meta {
   display: flex;
   gap: 10px;
   align-items: center;
-  font-size: 0.78rem;
-  color: var(--muted);
-  margin-bottom: 8px;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 10px;
 }
+
 .meta .source {
   font-weight: 600;
-  color: var(--accent);
-  background: var(--accent-light);
-  padding: 2px 8px;
-  border-radius: 6px;
+  color: var(--text-muted);
 }
+
+.meta .dot {
+  width: 3px;
+  height: 3px;
+  background: var(--text-light);
+  border-radius: 50%;
+}
+
 .summary {
-  font-size: 0.95rem;
+  font-size: 0.98rem;
   color: var(--text);
   margin: 0;
+  line-height: 1.6;
 }
+
 footer {
   text-align: center;
-  padding: 40px 0 20px;
-  color: var(--muted);
-  font-size: 0.85rem;
+  padding: 48px 0 24px;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border);
 }
+
 .empty {
   text-align: center;
-  color: var(--muted);
-  padding: 40px 0;
+  color: var(--text-muted);
+  padding: 48px 0;
 }
-@media (max-width: 520px) {
-  header h1 { font-size: 1.7rem; }
-  .container { padding: 20px 14px 40px; }
+
+@media (max-width: 560px) {
+  .container { padding: 32px 18px 48px; }
+  header.top h1 { font-size: 2rem; }
+  .card { padding: 18px 20px; }
+  .card a.title { font-size: 1.1rem; }
 }
 """.strip()
 
@@ -584,6 +641,7 @@ footer {
           <a class="title" href="{item['url']}" target="_blank" rel="noopener">{item['title']}</a>
           <div class="meta">
             <span class="source">{item['source']}</span>
+            <span class="dot"></span>
             <span>{item.get('published', '')}</span>
           </div>
           <p class="summary">{item.get('summary', '')}</p>
@@ -627,16 +685,19 @@ footer {
 </head>
 <body>
   <div class="container">
-    <header>
-      <span class="badge">Daily Brief</span>
+    <header class="top">
+      <span class="kicker">Daily Brief</span>
       <h1>{title}</h1>
-      <p>Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
+      <p class="subtitle">Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
+      <div class="meta-line">
+        <span>Actualizado: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</span>
+      </div>
     </header>
     <main>
       {body}
     </main>
     <footer>
-      Generado automáticamente · Actualizado: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}
+      Generado automáticamente · {datetime.now(timezone.utc).strftime('%Y')}
     </footer>
   </div>
 </body>
