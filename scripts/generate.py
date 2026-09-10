@@ -19,37 +19,50 @@ HTML_FILE = ROOT / "index.html"
 
 TOPICS = [
     {
-        "category": "Open Banking Chile y Latam",
-        "queries": [
-            "open banking Chile noticias hoy",
-            "open finance Brasil noticias hoy",
-            "open banking México noticias hoy",
-            "banca abierta Latam noticias",
-        ],
-    },
-    {
         "category": "Innovación Bancaria y Productos Chile",
         "queries": [
-            "banca digital Chile productos bancarios hoy",
-            "innovación bancaria Chile noticias",
-            "Banco Chile BancoEstado Itaú productos digitales",
+            "banca digital Chile noticias hoy",
+            "innovación bancaria Chile noticias hoy",
+            "Banco de Chile productos digitales noticias",
+            "BancoEstado Chile productos digitales noticias",
+            "Banco Itaú Chile innovación noticias",
+            "Santander Chile banca digital noticias",
+            "BCI Chile banca digital noticias",
+            "Scotiabank Chile productos digitales noticias",
+            "Tenpo Chile fintech noticias",
+            "Bice Chile banca digital noticias",
+            "Fintoc Chile open banking noticias",
             "fintech Chile noticias hoy",
         ],
     },
     {
-        "category": "Inteligencia Artificial en Banca",
+        "category": "Open Banking Chile y Latam",
         "queries": [
-            "IA inteligencia artificial banca Chile",
+            "open banking Chile noticias hoy",
+            "banca abierta Chile CMF noticias",
+            "open finance Chile noticias",
+            "open banking Latam noticias",
+            "open finance Brasil noticias hoy",
+            "open banking México noticias hoy",
+        ],
+    },
+    {
+        "category": "Inteligencia Artificial en Banca Chile",
+        "queries": [
+            "IA inteligencia artificial banca Chile noticias",
+            "bancos chilenos IA inteligencia artificial noticias",
+            "Banco de Chile IA inteligencia artificial",
+            "BancoEstado IA inteligencia artificial",
+            "Itaú Chile IA inteligencia artificial",
+            "BCI Chile IA inteligencia artificial",
+            "Santander Chile IA noticias",
             "AI banking Latin America news",
-            "bancos usando IA Chile noticias",
-            "IA detección fraude banca",
         ],
     },
     {
         "category": "Tecnología Financiera Global",
         "queries": [
             "fintech innovation news today",
-            "core banking transformation AI",
             "digital banking technology news",
         ],
     },
@@ -60,7 +73,7 @@ BLOCKED_DOMAINS = {
     "youtube.com", "youtu.be", "tiktok.com", "reddit.com", "pinterest.com",
     "espn.com", "imdb.com", "spotify.com", "apple.com", "bitget.com",
     "beinsure.com", "ffnews.com", "kchcomunicacion.com", "fundssociety.com",
-    "xtb.com",
+    "xtb.com", "ecosistemastartup.com", "bebee.com", "rosariofinanzas.ar",
 }
 
 
@@ -151,6 +164,10 @@ def clean_summary(content: str) -> str:
         "Venture Capital", "Inversiones", "Rondas, fondos", "IA Tecnología", "Web3",
         "Modelos de Negocio", "Propósito", "Erradicar", "Construir en la comunidad",
         "Lo Último", "Lo Mas Leido", "Lo Más Leído", "Banco de Chile B Startup",
+        "Menú", "Ir al contenido", "Inicio", "Noticias", "Más noticias", "Postulantes",
+        "Estudiantes", "Académicas/os", "Funcionarias/os", "Egresadas/os",
+        "Notas relacionadas", "Negocios", "Destacados", "Aerolíneas", "SERNAC",
+        "Icare", "Informe de Política Monetaria", "Rosanna Costa",
     ]
     for word in menu_words:
         content = re.sub(r"\b" + re.escape(word) + r"\b[^.]*", "", content, flags=re.IGNORECASE)
@@ -192,7 +209,37 @@ def is_relevant(title: str, content: str) -> bool:
     return has_bank and has_geo
 
 
-def classify_category(title: str, content: str) -> str:
+def score_chile_priority(item: Dict[str, Any]) -> float:
+    """Boost score for items explicitly about Chile."""
+    title = item.get("title", "").lower()
+    content = (item.get("content", "") or "").lower()
+    base = item.get("score", 0.0)
+    chile_markers = ["chile", "chilena", "chileno", "chilenos", "chilenas", "santiago"]
+    bank_markers = ["banco", "banca", "bancoestado", "banco de chile", "itaú", "itau", "santander", "bice", "scotiabank", "tenpo", "falabella", "cmr"]
+    boost = 0.0
+    if any(m in title for m in chile_markers):
+        boost += 0.15
+    if any(m in content for m in chile_markers):
+        boost += 0.05
+    if any(m in title for m in bank_markers):
+        boost += 0.05
+    return base + boost
+
+
+def is_chilean_source(url: str) -> bool:
+    """Detect if URL domain suggests a Chilean news source."""
+    host = normalize_source(url)
+    chile_tlds = [".cl"]
+    chile_domains = [
+        "df.cl", "elmostrador.cl", "theclinic.cl", "chocale.cl", "trendtic.cl",
+        "fintoc.com", "tenpo.cl", "bci.cl", "bancoestado.cl", "bancochile.cl",
+        "itauchile.cl", "santander.cl", "scotiabankcl.com", "bice.cl",
+        "fch.cl", "uchile.cl", "brinca.com", "auroranoticias.cl",
+    ]
+    return any(host.endswith(tld) for tld in chile_tlds) or any(host == d or host.endswith("." + d) for d in chile_domains)
+
+
+def classify_category(title: str, content: str, url: str = "") -> str:
     """Classify by explicit topic signals. Fallback to global fintech."""
     text = (title + " " + content).lower()
     title_lower = title.lower()
@@ -201,18 +248,32 @@ def classify_category(title: str, content: str) -> str:
         "inteligencia artificial", "artificial intelligence", "machine learning",
         "modelo de ia", "ia en banca", "ai en banca", "agentes de ia", "banca con ia",
     ]
-
+    chile_markers = ["chile", "chilena", "chileno", "chilenos", "chilenas", "santiago"]
+    is_chile_term = any(m in text for m in chile_markers)
+    is_chilean = is_chile_term and is_chilean_source(url)
     is_open = any(t in title_lower for t in open_terms) or any(t in text for t in open_terms)
     is_ai = any(t in title_lower for t in ai_title_terms) and \
             any(t in text for t in ["banco", "banca", "bank", "fintech", "financier", "crédito", "tarjeta", "pagos", "digital bank"])
-    is_chile = ("chile" in text or "chilena" in text or "chileno" in text) and \
-               any(t in text for t in ["banco", "banca", "fintech", "producto", "tarjeta", "crédito", "cuenta", "bancoestado", "banco de chile"])
+    is_econ_policy = any(t in text for t in [
+        "banco central", "banco central de chile", "política monetaria", "inflación",
+        "tasas", "cop", "hacienda",
+        "crecimiento económico", "ipom", "pib", "economía chilena", "rosanna costa",
+    ]) and not any(t in title_lower for t in ["ley fintech", "fintech", "producto bancario", "tarjeta", "cuenta", "banca digital"])
+    is_chile_bank = is_chile_term and \
+                    any(t in text for t in ["banco", "banca", "fintech", "producto", "tarjeta", "crédito", "cuenta", "bancoestado", "banco de chile", "itaú", "itau", "santander", "bice", "scotiabank", "tenpo", "falabella", "cmr"])
+    is_chile_tech = is_chile_term and any(t in text for t in ["inteligencia artificial", "artificial intelligence", "machine learning", "ia", "tecnología", "digital", "innovación tecnológica"])
 
     if is_open:
         return "Open Banking Chile y Latam"
     if is_ai:
-        return "Inteligencia Artificial en Banca"
-    if is_chile:
+        return "Inteligencia Artificial en Banca Chile"
+    if is_econ_policy and is_chile_term:
+        return "Economía y Política Monetaria Chile"
+    if is_chile_bank:
+        return "Innovación Bancaria y Productos Chile"
+    if is_chilean and is_chile_tech:
+        return "IA y Tecnología Chile"
+    if is_chile_term:
         return "Innovación Bancaria y Productos Chile"
     return "Tecnología Financiera Global"
 
@@ -235,7 +296,10 @@ def is_quality_summary(summary: str, title: str) -> bool:
         "empleos", "deportes", "farándula", "virales", "horóscopo", "trends", "streamers",
         "carreras", "actualidad", "lo último", "lo mas leido", "lo más leído", "site docs",
         "venture capital", "ia  tecnología", "modelos de negocio", "propósito:",
-        "ia & tecnología", "ia and tecnología", "tendencias,",
+        "ia & tecnología", "ia and tecnología", "tendencias,", "notas relacionadas",
+        "ir al contenido", "postulantes", "estudiantes", "académicas/os", "funcionarias/os",
+        "egresadas/os", "más noticias", "destacados", "sernac", "aerolíneas",
+        "icare", "informe de política monetaria", "rosanna costa", "banco central de chile",
     ]
     menu_count = sum(1 for w in menu_words if w in lower)
     if menu_count >= 2:
@@ -244,21 +308,6 @@ def is_quality_summary(summary: str, title: str) -> bool:
     if capitalized_phrases >= 4:
         return False
     return True
-
-
-def is_pdf_url(url: str) -> bool:
-    return url.lower().endswith(".pdf") or "/site/docs/" in url.lower()
-
-
-def is_duplicate_topic(title1: str, title2: str) -> bool:
-    """Detect near-duplicate stories by shared significant words."""
-    stop = {"de", "la", "el", "en", "y", "a", "que", "con", "por", "para", "del", "al", "los", "las", "un", "una", "su", "se", "es", "son", "al", "más", "mas", "noticia", "ee", "uu", "eeuu", "us", "news"}
-    words1 = set(w for w in re.sub(r"[^\w]", " ", title1.lower()).split() if len(w) > 2 and w not in stop)
-    words2 = set(w for w in re.sub(r"[^\w]", " ", title2.lower()).split() if len(w) > 2 and w not in stop)
-    if not words1 or not words2:
-        return False
-    overlap = len(words1 & words2)
-    return overlap >= 3 and overlap / min(len(words1), len(words2)) >= 0.5
 
 
 def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[str, Any]]:
@@ -306,6 +355,21 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
     return new_items
 
 
+def is_pdf_url(url: str) -> bool:
+    return url.lower().endswith(".pdf") or "/site/docs/" in url.lower()
+
+
+def is_duplicate_topic(title1: str, title2: str) -> bool:
+    """Detect near-duplicate stories by shared significant words."""
+    stop = {"de", "la", "el", "en", "y", "a", "que", "con", "por", "para", "del", "al", "los", "las", "un", "una", "su", "se", "es", "son", "al", "más", "mas", "noticia", "ee", "uu", "eeuu", "us", "news"}
+    words1 = set(w for w in re.sub(r"[^\w]", " ", title1.lower()).split() if len(w) > 2 and w not in stop)
+    words2 = set(w for w in re.sub(r"[^\w]", " ", title2.lower()).split() if len(w) > 2 and w not in stop)
+    if not words1 or not words2:
+        return False
+    overlap = len(words1 & words2)
+    return overlap >= 3 and overlap / min(len(words1), len(words2)) >= 0.5
+
+
 def collect_news() -> List[Dict[str, Any]]:
     all_results = []
     for topic in TOPICS:
@@ -316,7 +380,7 @@ def collect_news() -> List[Dict[str, Any]]:
                 r["_category"] = topic["category"]
             all_results.extend(results)
     # Sort by relevance score descending before dedup to keep best first
-    all_results.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+    all_results.sort(key=lambda x: score_chile_priority(x), reverse=True)
     # Deduplicate by URL and title similarity
     seen_urls: set = set()
     seen_titles: set = set()
@@ -343,8 +407,29 @@ def collect_news() -> List[Dict[str, Any]]:
     merged = dedupe_and_merge(deduped_results, seen)
     # Classify by content
     for m in merged:
-        m["category"] = classify_category(m["title"], m["summary"])
+        m["category"] = classify_category(m["title"], m["summary"], m["url"])
     return merged
+
+
+def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 10, max_global: int = 3) -> List[Dict[str, Any]]:
+    """Pick items ensuring Chile-related news dominates the edition."""
+    chile_items = []
+    global_items = []
+    for item in items:
+        text = (item.get("title", "") + " " + item.get("summary", "")).lower()
+        if "chile" in text or "chilena" in text or "chileno" in text or "santiago" in text:
+            chile_items.append(item)
+        else:
+            global_items.append(item)
+
+    selected = []
+    # Take all Chile items first, up to the total limit
+    selected.extend(chile_items[:total_limit])
+    # Fill remainder with global items, up to max_global
+    remaining = total_limit - len(selected)
+    if remaining > 0:
+        selected.extend(global_items[:min(remaining, max_global)])
+    return selected
 
 
 def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "Newsletter Financiera") -> str:
@@ -531,7 +616,8 @@ footer {
 
     body = "".join(sections) if sections else "<p class='empty'>Aún no hay noticias para mostrar.</p>"
 
-    return f"""<!doctype html>
+    return f"""
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
@@ -567,6 +653,9 @@ def main():
     print(f"Fecha edición: {today}")
 
     new_items = collect_news()
+    # Prioritize Chilean news and limit total edition size
+    new_items = select_items_chile_priority(new_items, total_limit=10, max_global=3)
+
     # Add date and limit items per category per day
     per_category_limit = 6
     category_counts: Dict[str, int] = {}
@@ -585,9 +674,13 @@ def main():
         news_history.append(item)
         seen.add(item["id"])
 
-    # Save
-    save_json(SEEN_FILE, sorted(seen))
-    save_json(NEWS_FILE, news_history)
+    # Rebuild history keeping only the first occurrence of each URL
+    unique_history: Dict[str, Dict[str, Any]] = {}
+    for item in news_history:
+        key = item.get("id") or seen_key(item)
+        if key not in unique_history:
+            unique_history[key] = item
+    news_history = list(unique_history.values())
 
     # Group by date descending
     by_date: Dict[str, List[Dict[str, Any]]] = {}
@@ -595,7 +688,9 @@ def main():
         by_date.setdefault(item["date"], []).append(item)
 
     HTML_FILE.write_text(build_html(by_date), encoding="utf-8")
-    print(f"Generadas {len(new_items)} noticias nuevas. Total histórico: {len(news_history)}")
+    save_json(SEEN_FILE, sorted(seen))
+    save_json(NEWS_FILE, news_history)
+    print(f"Generadas {len(new_items)} noticias nuevas. Total histórico único: {len(news_history)}")
     print(f"HTML escrito: {HTML_FILE}")
 
 
