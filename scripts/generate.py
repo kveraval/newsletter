@@ -445,7 +445,7 @@ def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 
     return selected
 
 
-def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "Newsletter Financiera", daily_quote: str = "") -> str:
+def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "El Brief de Kay", daily_quote: str = "") -> str:
     css = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
