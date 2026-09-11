@@ -1253,6 +1253,7 @@ footer {
         var category = container.getAttribute('data-category');
         var stars = container.querySelectorAll('.star');
         var feedback = container.parentElement.querySelector('.feedback');
+        var selectedValue = 0;
 
         function setVisual(value) {{
           stars.forEach(function(s) {{
@@ -1262,15 +1263,20 @@ footer {
           }});
         }}
 
+        function restoreVisual() {{
+          setVisual(selectedValue);
+        }}
+
         stars.forEach(function(star) {{
           star.addEventListener('mouseenter', function() {{
             setVisual(parseInt(star.getAttribute('data-stars'), 10));
           }});
           star.addEventListener('mouseleave', function() {{
-            stars.forEach(function(s) {{ s.classList.remove('rated', 'active'); }});
+            restoreVisual();
           }});
           star.addEventListener('click', function() {{
             var value = parseInt(star.getAttribute('data-stars'), 10);
+            selectedValue = value;
             setVisual(value);
             saveRating(articleId, articleUrl, title, source, category, value).then(function(resp) {{
               if (resp && resp.ok) {{
