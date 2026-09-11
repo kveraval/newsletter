@@ -1233,15 +1233,21 @@ footer {
           category: category,
           stars: stars
         }});
-        return fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {{
-          method: 'POST',
-          headers: {{
-            'apikey': SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          }},
-          body: payload
+        var headers = {{
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        }};
+        var deleteUrl = SUPABASE_URL + '/rest/v1/' + TABLE + '?article_id=eq.' + encodeURIComponent(articleId);
+        return fetch(deleteUrl, {{
+          method: 'DELETE',
+          headers: headers
+        }}).then(function() {{
+          return fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {{
+            method: 'POST',
+            headers: Object.assign({{}}, headers, {{'Prefer': 'return=minimal'}}),
+            body: payload
+          }});
         }});
       }}
 
