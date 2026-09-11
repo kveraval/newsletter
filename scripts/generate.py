@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 Generador de newsletter diaria de noticias tecnológicas/bancarias.
-Busca con Tavily, filtra duplicados, actualiza news.json e index.html.
+Busca con Tavily, filtra duplicados, extrae contenido limpio e imágenes,
+y actualiza news.json e index.html.
 """
 import json
 import hashlib
@@ -143,6 +144,42 @@ def run_tavily(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
         return []
 
 
+def extract_article(url: str) -> Dict[str, Any]:
+    """Extract clean article content and images with Tavily extract."""
+    cmd = [
+        "/root/.tavily-env/bin/tvly",
+        "extract",
+        url,
+        "--include-images",
+        "--json",
+    ]
+    try:
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=60)
+        if result.returncode != 0:
+            return {}
+        parsed = json.loads(result.stdout)
+        return parsed or {}
+    except Exception as e:
+        print(f"Extract error ({url}): {e}")
+        return {}
+
+
+def first_substantial_paragraph(text: str, min_len: int = 80, max_len: int = 260) -> str:
+    """Pick the first paragraph that looks like real article content."""
+    paragraphs = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
+    for p in paragraphs:
+        p = re.sub(r"\s+", " ", p).strip()
+        if len(p) < min_len:
+            continue
+        lower = p.lower()
+        if any(w in lower for w in ["menú", "home", "noticias:", "suscríbete", "compartir", "ir al contenido"]):
+            continue
+        if len(p) > max_len:
+            p = p[:max_len].rsplit(" ", 1)[0] + "…"
+        return p
+    return ""
+
+
 def normalize_source(url: str) -> str:
     try:
         from urllib.parse import urlparse
@@ -159,15 +196,12 @@ def normalize_source(url: str) -> str:
 def clean_summary(content: str) -> str:
     if not content:
         return ""
-    # Drop country-code selectors and obvious artifacts
     content = re.sub(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s*\+\d{1,4}\b", "", content)
     content = re.sub(r"\b\d{1,4}\s+[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\b", "", content)
     content = re.sub(r"#+", "", content)
     content = re.sub(r"\*+", "", content)
     content = re.sub(r"\[\.\.\.\]", "", content)
-    # Strip leading stray punctuation and fragments
     content = re.sub(r"^[\.\,\;\:\-\|\s]+", "", content)
-    # Strip common website menu crumbs and emojis with following category text
     content = re.sub(r"[👥🔍💼📊✅].{0,80}(?:\:|$)", "", content, flags=re.UNICODE)
     menu_words = [
         "Respuestas", "que Hora", "Loterias", "Tramites", "Empleos", "Deportes",
@@ -184,7 +218,6 @@ def clean_summary(content: str) -> str:
     ]
     for word in menu_words:
         content = re.sub(r"\b" + re.escape(word) + r"\b[^.]*", "", content, flags=re.IGNORECASE)
-    # Remove isolated short fragments separated by dots that look like menus
     content = re.sub(r"\b[A-Z][a-z]+(?:\s+[A-Z][a-z]+){1,3}\s*:\s*", "", content)
     content = re.sub(r"\s+", " ", content).strip()
     return content
@@ -223,7 +256,6 @@ def is_relevant(title: str, content: str) -> bool:
 
 
 def score_chile_priority(item: Dict[str, Any]) -> float:
-    """Boost score for items explicitly about Chile."""
     title = item.get("title", "").lower()
     content = (item.get("content", "") or "").lower()
     base = item.get("score", 0.0)
@@ -240,7 +272,6 @@ def score_chile_priority(item: Dict[str, Any]) -> float:
 
 
 def is_chilean_source(url: str) -> bool:
-    """Detect if URL domain suggests a Chilean news source."""
     host = normalize_source(url)
     chile_tlds = [".cl"]
     chile_domains = [
@@ -253,7 +284,6 @@ def is_chilean_source(url: str) -> bool:
 
 
 def classify_category(title: str, content: str, url: str = "") -> str:
-    """Classify by explicit topic signals. Fallback to global fintech."""
     text = (title + " " + content).lower()
     title_lower = title.lower()
     open_terms = ["open banking", "open finance", "banca abierta", "open data", "apis abiertas", "open insurance"]
@@ -292,11 +322,9 @@ def classify_category(title: str, content: str, url: str = "") -> str:
 
 
 def is_quality_summary(summary: str, title: str) -> bool:
-    """Reject summaries that look like site menus, concatenated headlines, or punctuation soup."""
     if not summary or len(summary) < 20:
         return False
     lower = summary.lower()
-    # Require a reasonable ratio of real words to total characters
     real_words = re.findall(r"[a-zA-ZáéíóúñÁÉÍÓÚÑ]{3,}", summary)
     if len(real_words) < 6:
         return False
@@ -321,6 +349,20 @@ def is_quality_summary(summary: str, title: str) -> bool:
     if capitalized_phrases >= 4:
         return False
     return True
+
+
+def is_pdf_url(url: str) -> bool:
+    return url.lower().endswith(".pdf") or "/site/docs/" in url.lower()
+
+
+def is_duplicate_topic(title1: str, title2: str) -> bool:
+    stop = {"de", "la", "el", "en", "y", "a", "que", "con", "por", "para", "del", "al", "los", "las", "un", "una", "su", "se", "es", "son", "al", "más", "mas", "noticia", "ee", "uu", "eeuu", "us", "news"}
+    words1 = set(w for w in re.sub(r"[^\w]", " ", title1.lower()).split() if len(w) > 2 and w not in stop)
+    words2 = set(w for w in re.sub(r"[^\w]", " ", title2.lower()).split() if len(w) > 2 and w not in stop)
+    if not words1 or not words2:
+        return False
+    overlap = len(words1 & words2)
+    return overlap >= 3 and overlap / min(len(words1), len(words2)) >= 0.5
 
 
 def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[str, Any]]:
@@ -349,7 +391,6 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
         summary = extract_summary(content)
         if not is_quality_summary(summary, title):
             continue
-        # Skip if topic is nearly identical to one already kept
         if any(is_duplicate_topic(title, kt) for kt in kept_titles):
             continue
         kept_titles.append(title)
@@ -363,24 +404,25 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
                 "summary": summary,
                 "published": item.get("published_date", ""),
                 "score": score,
+                "image": item.get("image", "") or "",
             }
         )
     return new_items
 
 
-def is_pdf_url(url: str) -> bool:
-    return url.lower().endswith(".pdf") or "/site/docs/" in url.lower()
-
-
-def is_duplicate_topic(title1: str, title2: str) -> bool:
-    """Detect near-duplicate stories by shared significant words."""
-    stop = {"de", "la", "el", "en", "y", "a", "que", "con", "por", "para", "del", "al", "los", "las", "un", "una", "su", "se", "es", "son", "al", "más", "mas", "noticia", "ee", "uu", "eeuu", "us", "news"}
-    words1 = set(w for w in re.sub(r"[^\w]", " ", title1.lower()).split() if len(w) > 2 and w not in stop)
-    words2 = set(w for w in re.sub(r"[^\w]", " ", title2.lower()).split() if len(w) > 2 and w not in stop)
-    if not words1 or not words2:
-        return False
-    overlap = len(words1 & words2)
-    return overlap >= 3 and overlap / min(len(words1), len(words2)) >= 0.5
+def enrich_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    """Extract clean content and image for a news item."""
+    extracted = extract_article(item["url"])
+    if extracted:
+        images = extracted.get("images", []) or []
+        if images and not item.get("image"):
+            item["image"] = images[0]
+        raw_text = extracted.get("content", "") or extracted.get("text", "") or ""
+        if raw_text:
+            clean = first_substantial_paragraph(raw_text)
+            if clean:
+                item["summary"] = clean
+    return item
 
 
 def collect_news() -> List[Dict[str, Any]]:
@@ -392,9 +434,7 @@ def collect_news() -> List[Dict[str, Any]]:
             for r in results:
                 r["_category"] = topic["category"]
             all_results.extend(results)
-    # Sort by relevance score descending before dedup to keep best first
     all_results.sort(key=lambda x: score_chile_priority(x), reverse=True)
-    # Deduplicate by URL and title similarity
     seen_urls: set = set()
     seen_titles: set = set()
     deduped_results = []
@@ -415,17 +455,22 @@ def collect_news() -> List[Dict[str, Any]]:
         if title_norm:
             seen_titles.add(title_norm)
         deduped_results.append(r)
-    # Deduplicate globally and filter
     seen: set = set()
     merged = dedupe_and_merge(deduped_results, seen)
-    # Classify by content
     for m in merged:
         m["category"] = classify_category(m["title"], m["summary"], m["url"])
+
+    # Enrich top items with clean extraction (limit to avoid long runs)
+    for item in merged[:8]:
+        try:
+            enrich_item(item)
+        except Exception as e:
+            print(f"Enrichment failed for {item.get('url', '')}: {e}")
+
     return merged
 
 
 def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 10, max_global: int = 3) -> List[Dict[str, Any]]:
-    """Pick items ensuring Chile-related news dominates the edition."""
     chile_items = []
     global_items = []
     for item in items:
@@ -436,9 +481,7 @@ def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 
             global_items.append(item)
 
     selected = []
-    # Take all Chile items first, up to the total limit
     selected.extend(chile_items[:total_limit])
-    # Fill remainder with global items, up to max_global
     remaining = total_limit - len(selected)
     if remaining > 0:
         selected.extend(global_items[:min(remaining, max_global)])
@@ -489,6 +532,11 @@ header.top {
   margin-bottom: 40px;
 }
 
+header.top .icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
 header.top .kicker {
   display: inline-block;
   color: var(--accent);
@@ -497,11 +545,6 @@ header.top .kicker {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   margin-bottom: 12px;
-}
-
-header.top .icon {
-  font-size: 2rem;
-  margin-bottom: 8px;
 }
 
 header.top h1 {
@@ -597,6 +640,15 @@ header.top .meta-line {
   box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
 
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  background: var(--surface);
+}
+
 .card a.title {
   display: block;
   text-decoration: none;
@@ -659,12 +711,17 @@ footer {
   header.top h1 { font-size: 2rem; }
   .card { padding: 18px 20px; }
   .card a.title { font-size: 1.1rem; }
+  .card img { height: 140px; }
 }
 """.strip()
 
     def card_html(item: Dict[str, Any]) -> str:
+        image_html = ""
+        if item.get("image"):
+            image_html = f'<img src="{item["image"]}" alt="" loading="lazy">'
         return f"""
         <article class="card">
+          {image_html}
           <a class="title" href="{item['url']}" target="_blank" rel="noopener">{item['title']}</a>
           <div class="meta">
             <span class="source">{item['source']}</span>
@@ -746,10 +803,8 @@ def main():
     daily_quote = DAILY_QUOTES[datetime.now(timezone.utc).day % len(DAILY_QUOTES)]
 
     new_items = collect_news()
-    # Prioritize Chilean news and limit total edition size
     new_items = select_items_chile_priority(new_items, total_limit=10, max_global=3)
 
-    # Add date and limit items per category per day
     per_category_limit = 6
     category_counts: Dict[str, int] = {}
     limited_items = []
@@ -762,12 +817,10 @@ def main():
         limited_items.append(item)
     new_items = limited_items
 
-    # Merge into history
     for item in new_items:
         news_history.append(item)
         seen.add(item["id"])
 
-    # Rebuild history keeping only the first occurrence of each URL
     unique_history: Dict[str, Dict[str, Any]] = {}
     for item in news_history:
         key = item.get("id") or seen_key(item)
@@ -775,7 +828,6 @@ def main():
             unique_history[key] = item
     news_history = list(unique_history.values())
 
-    # Group by date descending
     by_date: Dict[str, List[Dict[str, Any]]] = {}
     for item in news_history:
         by_date.setdefault(item["date"], []).append(item)
