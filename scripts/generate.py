@@ -17,6 +17,19 @@ SEEN_FILE = DATA_DIR / "seen.json"
 NEWS_FILE = DATA_DIR / "news.json"
 HTML_FILE = ROOT / "index.html"
 
+DAILY_QUOTES = [
+    '"La mejor manera de predecir el futuro es crearlo." — Peter Drucker',
+    '"La innovación distingue al líder del seguidor." — Steve Jobs',
+    '"No busques errores, busca soluciones." — Henry Ford',
+    '"El riesgo más grande es no tomar ninguno." — Mark Zuckerberg',
+    '"La transformación digital no es opcional, es inevitable."',
+    '"Cada crisis es una oportunidad disfrazada." — Albert Einstein',
+    '"Quien no se mueve no siente sus cadenas." — Rosa Luxemburgo',
+    '"El dinero no es el objetivo. La libertad sí."',
+    '"Los datos son el nuevo petróleo, pero la intuición sigue siendo el motor."',
+    '"Construye algo que importe."',
+]
+
 TOPICS = [
     {
         "category": "Innovación Bancaria y Productos Chile",
@@ -432,7 +445,7 @@ def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 
     return selected
 
 
-def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "Newsletter Financiera") -> str:
+def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "Newsletter Financiera", daily_quote: str = "") -> str:
     css = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
@@ -500,6 +513,15 @@ header.top .subtitle {
   margin: 12px 0 0;
   color: var(--text-muted);
   font-size: 1rem;
+}
+
+header.top .quote {
+  margin: 20px 0 0;
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.5;
 }
 
 header.top .meta-line {
@@ -689,6 +711,7 @@ footer {
       <span class="kicker">Daily Brief</span>
       <h1>{title}</h1>
       <p class="subtitle">Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
+      <p class="quote">{daily_quote}</p>
       <div class="meta-line">
         <span>Actualizado: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</span>
       </div>
@@ -712,6 +735,8 @@ def main():
 
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     print(f"Fecha edición: {today}")
+
+    daily_quote = DAILY_QUOTES[datetime.now(timezone.utc).day % len(DAILY_QUOTES)]
 
     new_items = collect_news()
     # Prioritize Chilean news and limit total edition size
@@ -748,7 +773,7 @@ def main():
     for item in news_history:
         by_date.setdefault(item["date"], []).append(item)
 
-    HTML_FILE.write_text(build_html(by_date), encoding="utf-8")
+    HTML_FILE.write_text(build_html(by_date, daily_quote=daily_quote), encoding="utf-8")
     save_json(SEEN_FILE, sorted(seen))
     save_json(NEWS_FILE, news_history)
     print(f"Generadas {len(new_items)} noticias nuevas. Total histórico único: {len(news_history)}")
