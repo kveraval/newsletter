@@ -22,17 +22,6 @@
     "date": "2026-09-10"
   },
   {
-    "id": "54162a0e9193b618",
-    "title": "Rosanna Costa, presidenta del Banco Central: \"La economía chilena se ha debilitado en lo que va del año\"",
-    "url": "https://chocale.cl/2026/09/rosanna-costa-presidenta-del-banco-central-la-economia-chilena-se-ha-debilitado-en-lo-que-va-del-ano",
-    "source": "chocale.cl",
-    "summary": "Gremios respaldan el MK4: Ponen foco en su diseño, costo fiscal y reglas de implementación Usuarios de financiamiento digital alternativo crecen 72% en Chile . Shell tendrá una serie de descuentos en bencina durante enero del 2024. Leer más",
-    "published": "Thu, 10 Sep 2026 10:59:00 GMT",
-    "score": 0.39201146,
-    "category": "Economía y Política Monetaria Chile",
-    "date": "2026-09-10"
-  },
-  {
     "id": "1b209879bc3cfaaa",
     "title": "Revive Impacta IA Chile 2026 - Brinca",
     "url": "https://www.brinca.com/revive-impacta-ia-chile-2026",
@@ -63,17 +52,6 @@
     "published": "Thu, 10 Sep 2026 15:12:58 GMT",
     "score": 0.35541737,
     "category": "Innovación Bancaria y Productos Chile",
-    "date": "2026-09-10"
-  },
-  {
-    "id": "fd81b9c721ee3752",
-    "title": "La inteligencia artificial llegó antes que la alfabetización matemática - Paislobo Prensa",
-    "url": "https://www.paislobo.cl/2026/09/la-inteligencia-artificial-llego-antes.html",
-    "source": "paislobo.cl",
-    "summary": "PISA 2025 deja para Chile una paradoja difícil de ignorar. Mientras solo el 41% de los . Además, un 39% los utiliza para realizar una primera búsqueda sobre un tema y un 33% para resumir textos o El contraste es todavía más inquietante…",
-    "published": "Thu, 10 Sep 2026 13:00:00 GMT",
-    "score": 0.34554735,
-    "category": "IA y Tecnología Chile",
     "date": "2026-09-10"
   },
   {
@@ -130,5 +108,77 @@
     "score": 0.41449648,
     "category": "Innovación Bancaria y Productos Chile",
     "date": "2026-09-10"
+  },
+  {
+    "id": "752538d73240be2b",
+    "title": "Congreso América Digital 2026: la tecnología deja de ser promesa y se convierte en estrategia empresarial - ITSitio Chile",
+    "url": "https://www.itsitio.com/ch/inteligencia-artificial/congreso-america-digital-2026-la-tecnologia-deja-de-ser-promesa-y-se-convierte-en-estrategia-empresarial",
+    "source": "itsitio.com",
+    "summary": "Mastercard ya realizó junto a seis bancos presentes en Chile transacciones utilizando infraestructura diseñada para pagos ejecutados por agentes de inteligencia artificial. Mastercard prueba en Chile una nueva era de pagos: agentes de IA…",
+    "published": "Thu, 10 Sep 2026 21:47:41 GMT",
+    "score": 0.7653308,
+    "image": "",
+    "category": "Innovación Bancaria y Productos Chile",
+    "date": "2026-09-11"
+  },
+  {
+    "id": "a4799a954e5e2021",
+    "title": "Tecnología y deuda de América Latina: inversiones que Santander ve ...",
+    "url": "https://www.bloomberglinea.com/mercados/tecnologia-y-deuda-de-america-latina-inversiones-que-santander-ve-ante-una-fed-restrictiva?outputType=amp",
+    "source": "bloomberglinea.com",
+    "summary": "En Chile, Santander conserva una visión favorable sobre las acciones, pero advierte que el avance acumulado del IPSA obliga a ser más selectivo. El P/E forward a 12 meses alcanza 12,2 veces, frente a un promedio de 10 años de 12,4 veces,…",
+    "published": "Thu, 10 Sep 2026 20:14:18 GMT",
+    "score": 0.5663309,
+    "image": "",
+    "category": "Innovación Bancaria y Productos Chile",
+    "date": "2026-09-11"
+  },
+  {
+    "id": "583149bc0ef8c8fc",
+    "title": "Pymes de todo Chile pueden postular a una beca gratuita para ordenar  sus finanzas – trendTIC",
+    "url": "https://www.trendtic.cl/2026/09/pymes-de-todo-chile-pueden-postular-a-una-beca-gratuita-para-ordenar-sus-finanzas",
+    "source": "trendtic.cl",
+    "summary": "Entre los principales tópicos abordados destacan las brechas más comunes en la gestión diaria de las pequeñas empresas: la mezcla de finanzas personales y las del negocio, el escaso control del flujo de caja, la dificultad para fijar…",
+    "published": "Thu, 10 Sep 2026 09:00:00 GMT",
+    "score": 0.25731036,
+    "image": "",
+    "category": "IA y Tecnología Chile",
+    "date": "2026-09-11"
+  },
+  {
+    "id": "71964ca32aa38598",
+    "title": "DF al Cierre | Aníbal Alarcón, economista senior Scotiabank, por IPoM: \"Es muy considerable el ajuste a la baja\" | Diario Financiero",
+    "url": "https://www.df.cl/df-stream/podcast/df-al-cierre-anibal-alarcon-economista-senior-scotiabank-por-ipom-es",
+    "source": "df.cl",
+    "summary": "DF.CL + Últimas .359,40 US$/oz UF Hoy $40.893,78 UTM $71.721,00 VER MÁSVER MÁS MARKET DATAMARKET DATA Papel Digital Newsletter Diario Financiero <%userdata?.email%> Editar perfil Credencial Salir Inicia Sesión ¿Eres cliente nuevo?…",
+    "published": "Thu, 10 Sep 2026 12:00:00 GMT",
+    "score": 0.48016238,
+    "image": "",
+    "category": "Tecnología Financiera Global",
+    "date": "2026-09-11"
+  },
+  {
+    "id": "329e69d29835f986",
+    "title": "Banco Central: «No descartamos que la debilidad de la economía sea más persistente»",
+    "url": "https://auroranoticias.cl/actualidad/banco-central-no-descartamos-que-la-debilidad-de-la-economia-sea-mas-persistente",
+    "source": "auroranoticias.cl",
+    "summary": "Por un lado, las . El recrudecimiento del conflicto entre . La buena noticia dentro de este convulsionado panorama global es que el boom del sector tecnológico y la inteligencia artificial han disparado el precio del cobre por encima de…",
+    "published": "Thu, 10 Sep 2026 10:56:41 GMT",
+    "score": 0.877601232326819,
+    "image": "",
+    "category": "Tecnología Financiera Global",
+    "date": "2026-09-11"
+  },
+  {
+    "id": "db0492689ff07548",
+    "title": "BancoEstado Personas: cómo ingresar y qué puedes hacer desde la web y la app",
+    "url": "https://www.redimin.cl/bancoestado-personas-como-ingresar-y-que-puedes-hacer-desde-la-web-y-la-app",
+    "source": "redimin.cl",
+    "summary": "BancoEstado ofrece una variedad de beneficios para sus cuentas en 2026, que incluyen descuentos, transferencias gratuitas y servicios digitales, dependiendo del tipo de cuenta. Cristian Recabarren Ortiz · Consultar saldos, cartolas y…",
+    "published": "Thu, 10 Sep 2026 14:45:15 GMT",
+    "score": 0.8181591294838438,
+    "image": "",
+    "category": "Tecnología Financiera Global",
+    "date": "2026-09-11"
   }
 ]

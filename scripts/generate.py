@@ -8,6 +8,7 @@ import json
 import hashlib
 import re
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict, Any
@@ -88,6 +89,8 @@ BLOCKED_DOMAINS = {
     "espn.com", "imdb.com", "spotify.com", "apple.com", "bitget.com",
     "beinsure.com", "ffnews.com", "kchcomunicacion.com", "fundssociety.com",
     "xtb.com", "ecosistemastartup.com", "bebee.com", "rosariofinanzas.ar",
+    "cl.trabajo.org", "adnradio.cl", "araucanianoticias.cl", "tabulado.net",
+    "paislobo.cl", "chocale.cl",
 }
 
 
@@ -117,6 +120,13 @@ def load_json(path: Path, default: Any) -> Any:
 
 def save_json(path: Path, data: Any) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def normalize_title(title: str) -> str:
+    """Convert ALL CAPS titles to title case."""
+    if title.isupper():
+        return title.title()
+    return title
 
 
 def run_tavily(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
@@ -178,6 +188,48 @@ def first_substantial_paragraph(text: str, min_len: int = 80, max_len: int = 260
             p = p[:max_len].rsplit(" ", 1)[0] + "…"
         return p
     return ""
+
+
+def summarize_with_ollama(text: str, model: str = "llama3.2:latest", max_input: int = 1800) -> str:
+    """Summarize article text using local Ollama model."""
+    text = text.strip()
+    if not text:
+        return ""
+    if len(text) > max_input:
+        text = text[:max_input].rsplit(" ", 1)[0]
+    prompt = (
+        "Eres un editor de una newsletter financiera. Resume el siguiente artículo en español en máximo 2 oraciones cortas. "
+        "Usa solo información relevante del sector financiero, bancario, fintech o tecnológico en Chile o Latinoamérica. "
+        "No repitas el título. No incluyas menús, publicidad, fechas de publicación ni texto repetido. "
+        "Responde únicamente con el resumen, sin introducción.\n\n"
+        f"{text}\n\nResumen:"
+    )
+    cmd = [
+        "ollama",
+        "run",
+        model,
+        "--nowordwrap",
+    ]
+    try:
+        result = subprocess.run(
+            cmd,
+            input=prompt,
+            capture_output=True,
+            text=True,
+            timeout=120,
+        )
+        if result.returncode != 0:
+            print(f"Ollama error: {result.stderr[:200]}")
+            return ""
+        summary = result.stdout.strip()
+        summary = re.sub(r"^(Resumen:|Aquí tienes el resumen:?\s*|El resumen es:?\s*)", "", summary, flags=re.IGNORECASE).strip()
+        summary = re.sub(r'"', "", summary)
+        if len(summary) > 300:
+            summary = summary[:300].rsplit(" ", 1)[0] + "…"
+        return summary
+    except Exception as e:
+        print(f"Ollama exception: {e}")
+        return ""
 
 
 def normalize_source(url: str) -> str:
@@ -275,7 +327,7 @@ def is_chilean_source(url: str) -> bool:
     host = normalize_source(url)
     chile_tlds = [".cl"]
     chile_domains = [
-        "df.cl", "elmostrador.cl", "theclinic.cl", "chocale.cl", "trendtic.cl",
+        "df.cl", "elmostrador.cl", "theclinic.cl", "trendtic.cl",
         "fintoc.com", "tenpo.cl", "bci.cl", "bancoestado.cl", "bancochile.cl",
         "itauchile.cl", "santander.cl", "scotiabankcl.com", "bice.cl",
         "fch.cl", "uchile.cl", "brinca.com", "auroranoticias.cl",
@@ -373,7 +425,7 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
         key = seen_key(item)
         if key in seen:
             continue
-        title = item.get("title", "").strip()
+        title = normalize_title(item.get("title", "").strip())
         content = item.get("content", "") or ""
         url = item.get("url", "").strip()
         score = item.get("score", 0.0)
@@ -382,6 +434,10 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
         if is_pdf_url(url):
             continue
         if not is_relevant(title, content):
+            continue
+        # Skip job postings and generic lifestyle content
+        combined = (title + " " + content).lower()
+        if any(t in combined for t in ["oferta de trabajo", "empleo", "careers", "jobs", "trabajo.org", "cómo obtener", "beneficio del minvu", "vivienda"]):
             continue
         source = normalize_source(url)
         if source in BLOCKED_DOMAINS:
@@ -411,17 +467,21 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
 
 
 def enrich_item(item: Dict[str, Any]) -> Dict[str, Any]:
-    """Extract clean content and image for a news item."""
+    """Extract clean content and image for a news item, and summarize with Ollama."""
     extracted = extract_article(item["url"])
-    if extracted:
-        images = extracted.get("images", []) or []
-        if images and not item.get("image"):
-            item["image"] = images[0]
-        raw_text = extracted.get("content", "") or extracted.get("text", "") or ""
-        if raw_text:
-            clean = first_substantial_paragraph(raw_text)
-            if clean:
-                item["summary"] = clean
+    if not extracted:
+        return item
+    images = extracted.get("images", []) or []
+    if images and not item.get("image"):
+        item["image"] = images[0]
+    raw_text = extracted.get("content", "") or extracted.get("text", "") or ""
+    if raw_text:
+        clean = first_substantial_paragraph(raw_text)
+        if clean:
+            item["summary"] = clean
+        ai_summary = summarize_with_ollama(raw_text)
+        if ai_summary and len(ai_summary) > 40:
+            item["summary"] = ai_summary
     return item
 
 
@@ -460,7 +520,7 @@ def collect_news() -> List[Dict[str, Any]]:
     for m in merged:
         m["category"] = classify_category(m["title"], m["summary"], m["url"])
 
-    # Enrich top items with clean extraction (limit to avoid long runs)
+    # Enrich top items with clean extraction and AI summaries (limit to avoid long runs)
     for item in merged[:8]:
         try:
             enrich_item(item)
@@ -792,7 +852,7 @@ footer {
 """
 
 
-def main():
+def main(regenerate_only: bool = False):
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     seen = set(load_json(SEEN_FILE, []))
     news_history = load_json(NEWS_FILE, [])
@@ -802,24 +862,27 @@ def main():
 
     daily_quote = DAILY_QUOTES[datetime.now(timezone.utc).day % len(DAILY_QUOTES)]
 
-    new_items = collect_news()
-    new_items = select_items_chile_priority(new_items, total_limit=10, max_global=3)
+    if not regenerate_only:
+        new_items = collect_news()
+        new_items = select_items_chile_priority(new_items, total_limit=10, max_global=3)
 
-    per_category_limit = 6
-    category_counts: Dict[str, int] = {}
-    limited_items = []
-    for item in new_items:
-        cat = item.get("category", "General")
-        if category_counts.get(cat, 0) >= per_category_limit:
-            continue
-        category_counts[cat] = category_counts.get(cat, 0) + 1
-        item["date"] = today
-        limited_items.append(item)
-    new_items = limited_items
+        per_category_limit = 6
+        category_counts: Dict[str, int] = {}
+        limited_items = []
+        for item in new_items:
+            cat = item.get("category", "General")
+            if category_counts.get(cat, 0) >= per_category_limit:
+                continue
+            category_counts[cat] = category_counts.get(cat, 0) + 1
+            item["date"] = today
+            limited_items.append(item)
+        new_items = limited_items
 
-    for item in new_items:
-        news_history.append(item)
-        seen.add(item["id"])
+        for item in new_items:
+            news_history.append(item)
+            seen.add(item["id"])
+    else:
+        print("Modo regeneración: solo reconstruye HTML desde historial.")
 
     unique_history: Dict[str, Dict[str, Any]] = {}
     for item in news_history:
@@ -835,9 +898,10 @@ def main():
     HTML_FILE.write_text(build_html(by_date, daily_quote=daily_quote), encoding="utf-8")
     save_json(SEEN_FILE, sorted(seen))
     save_json(NEWS_FILE, news_history)
-    print(f"Generadas {len(new_items)} noticias nuevas. Total histórico único: {len(news_history)}")
+    print(f"Total histórico único: {len(news_history)}")
     print(f"HTML escrito: {HTML_FILE}")
 
 
 if __name__ == "__main__":
-    main()
+    regenerate_only = "--regenerate-only" in sys.argv
+    main(regenerate_only=regenerate_only)
