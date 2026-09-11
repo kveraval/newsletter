@@ -301,6 +301,51 @@ header.top .meta-line {
   color: #854d0e;
 }
 
+.rating {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.rating .stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rating .star {
+  cursor: pointer;
+  font-size: 1.15rem;
+  color: var(--text-light);
+  transition: color 0.15s ease, transform 0.1s ease;
+  line-height: 1;
+}
+
+.rating .star:hover,
+.rating .star.active {
+  color: #f59e0b;
+  transform: scale(1.1);
+}
+
+.rating .star.rated {
+  color: #f59e0b;
+}
+
+.rating .feedback {
+  font-size: 0.72rem;
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.rating .feedback.visible {
+  opacity: 1;
+}
+
 .summary {
   font-size: 0.98rem;
   color: var(--text);
@@ -342,7 +387,7 @@ footer {
       <p class="subtitle">Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
       <p class="quote">"La innovación distingue al líder del seguidor." — Steve Jobs</p>
       <div class="meta-line">
-        <span>Actualizado: 2026-09-11 18:26 UTC</span>
+        <span>Actualizado: 2026-09-11 19:36 UTC</span>
       </div>
     </header>
     <main>
@@ -359,7 +404,7 @@ footer {
             <div class="category">
               <h3>Economía y Política Monetaria Chile</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="329e69d29835f986">
           <img src="https://auroranoticias.cl/wp-content/uploads/2026/09/BANCO-CENTRAL.jpeg" alt="" loading="lazy">
           <a class="title" href="https://auroranoticias.cl/actualidad/banco-central-no-descartamos-que-la-debilidad-de-la-economia-sea-mas-persistente" target="_blank" rel="noopener">Banco Central y la Tasa de Interés en Chile > Aurora Noticias</a>
           <div class="meta">
@@ -369,9 +414,16 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">El Banco Central de Chile mantuvo la Tasa de Interés de Política Monetaria en 4,5% debido a la encrucijada entre controlar la inflación y apoyar un economía local que no despega. La institución se enfrenta a una situación internacional incierta y globalizada.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="329e69d29835f986" data-title="Banco Central y la Tasa de Interés en Chile > Aurora Noticias" data-url="https://auroranoticias.cl/actualidad/banco-central-no-descartamos-que-la-debilidad-de-la-economia-sea-mas-persistente" data-source="auroranoticias.cl" data-category="Economía y Política Monetaria Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="f92ece8112b1a1c3">
           
           <a class="title" href="https://www.bloomberglinea.com/mercados/en-que-acciones-invertir-en-america-latina-de-itau-a-ecopetrol-estas-son-las-apuestas-de-citi" target="_blank" rel="noopener">¿En qué acciones invertir en América Latina? De Itaú a Ecopetrol, estas son las apuestas de Citi</a>
           <div class="meta">
@@ -381,6 +433,13 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Los bancos son la elección sectorial principal en Chile. Citi considera que llegan a la recuperación económica con calidad de activos, capitalización y rentabilidad saludables. El costo de riesgo del sector era de 1,12% en junio de 2026,…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="f92ece8112b1a1c3" data-title="¿En qué acciones invertir en América Latina? De Itaú a Ecopetrol, estas son las apuestas de Citi" data-url="https://www.bloomberglinea.com/mercados/en-que-acciones-invertir-en-america-latina-de-itau-a-ecopetrol-estas-son-las-apuestas-de-citi" data-source="bloomberglinea.com" data-category="Economía y Política Monetaria Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -388,7 +447,7 @@ footer {
             <div class="category">
               <h3>IA y Tecnología Chile</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="583149bc0ef8c8fc">
           
           <a class="title" href="https://www.trendtic.cl/2026/09/pymes-de-todo-chile-pueden-postular-a-una-beca-gratuita-para-ordenar-sus-finanzas" target="_blank" rel="noopener">Pymes de todo Chile pueden postular a una beca gratuita para ordenar  sus finanzas – trendTIC</a>
           <div class="meta">
@@ -398,9 +457,16 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Entre los principales tópicos abordados destacan las brechas más comunes en la gestión diaria de las pequeñas empresas: la mezcla de finanzas personales y las del negocio, el escaso control del flujo de caja, la dificultad para fijar…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="583149bc0ef8c8fc" data-title="Pymes de todo Chile pueden postular a una beca gratuita para ordenar  sus finanzas – trendTIC" data-url="https://www.trendtic.cl/2026/09/pymes-de-todo-chile-pueden-postular-a-una-beca-gratuita-para-ordenar-sus-finanzas" data-source="trendtic.cl" data-category="IA y Tecnología Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="ced7761f3f7a015d">
           <img src="https://fch.cl/content/uploads/2026/09/avonni.jpg" alt="" loading="lazy">
           <a class="title" href="https://fch.cl/noticias/premio-avonni-2026-anuncia-a-sus-36-finalistas-tras-recibir-record-de-postulaciones" target="_blank" rel="noopener">Premio Avonni 2026 anuncia a sus 36 finalistas tras recibir récord de postulaciones - Fundación Chile</a>
           <div class="meta">
@@ -410,9 +476,16 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">La Fundación Chile ha anunciado sus 36 finalistas para el Premio Avonni 2026, un reconocimiento a las mujeres que han logrado destacarse en su sector o profesión. Las candidatas son seleccionadas por una comisión de expertos y serán evaluadas en diferentes categorías para determinar las ganadoras…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="ced7761f3f7a015d" data-title="Premio Avonni 2026 anuncia a sus 36 finalistas tras recibir récord de postulaciones - Fundación Chile" data-url="https://fch.cl/noticias/premio-avonni-2026-anuncia-a-sus-36-finalistas-tras-recibir-record-de-postulaciones" data-source="fch.cl" data-category="IA y Tecnología Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="52f1f03a0e6d96f9">
           <img src="https://www.reporteminero.cl/files/6aa358d93867b_1200x719.webp" alt="" loading="lazy">
           <a class="title" href="https://www.reporteminero.cl/noticia/noticias/2026/09/discovery-ai-finalista-scaleup-boost-inteligencia-artificial-mineria" target="_blank" rel="noopener">Discovery AI avanza a final de ScaleUp Boost con solución de IA para minería</a>
           <div class="meta">
@@ -422,6 +495,13 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">Una startup chilena, Discovery AI, clasificó como finalista del programa ScaleUp Boost con una solución de inteligencia artificial para la minería, accediendo a cofinanciamiento Corfo de hasta 60 millones de pesos. La plataforma AIM utiliza procesamiento de lenguaje natural para analizar…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="52f1f03a0e6d96f9" data-title="Discovery AI avanza a final de ScaleUp Boost con solución de IA para minería" data-url="https://www.reporteminero.cl/noticia/noticias/2026/09/discovery-ai-finalista-scaleup-boost-inteligencia-artificial-mineria" data-source="reporteminero.cl" data-category="IA y Tecnología Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -429,7 +509,7 @@ footer {
             <div class="category">
               <h3>Innovación Bancaria y Productos Chile</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="752538d73240be2b">
           <img src="https://www.itsitio.com/ch/wp-content/uploads/sites/5/2026/09/WhatsApp-Image-2026-09-10-at-09.13.19-2-e1789076699635.jpeg" alt="" loading="lazy">
           <a class="title" href="https://www.itsitio.com/ch/inteligencia-artificial/congreso-america-digital-2026-la-tecnologia-deja-de-ser-promesa-y-se-convierte-en-estrategia-empresarial" target="_blank" rel="noopener">Congreso América Digital 2026: la tecnología deja de ser promesa y se convierte en estrategia empresarial - ITSitio Chile</a>
           <div class="meta">
@@ -439,9 +519,16 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">* [facebook](https://www.facebook.com/itsitio "Facebook") * [x](https://x.com/itsitio "X") * [linkedin](https://www.linkedin.com/company/itsitio/posts/?feedView=all "Instagram") * [youtube](https://www.youtube.com/itsitiov) *…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="752538d73240be2b" data-title="Congreso América Digital 2026: la tecnología deja de ser promesa y se convierte en estrategia empresarial - ITSitio Chile" data-url="https://www.itsitio.com/ch/inteligencia-artificial/congreso-america-digital-2026-la-tecnologia-deja-de-ser-promesa-y-se-convierte-en-estrategia-empresarial" data-source="itsitio.com" data-category="Innovación Bancaria y Productos Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="a4799a954e5e2021">
           <img src="https://www.bloomberglinea.com/resizer/v2/RWPEPKD6MRCENGLMMWIBTNNYQQ.jpg?auth=61403410a85e4cf6a0547a45cc4089cf469d24ba9afc5578d985b1f149cf19c8&width=1200&height=630&quality=80&smart=true" alt="" loading="lazy">
           <a class="title" href="https://www.bloomberglinea.com/mercados/tecnologia-y-deuda-de-america-latina-inversiones-que-santander-ve-ante-una-fed-restrictiva?outputType=amp" target="_blank" rel="noopener">Tecnología y deuda de América Latina: inversiones que Santander ve ...</a>
           <div class="meta">
@@ -451,9 +538,16 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Santander se está preparando para una Fed restrictiva al enfocarse en inversiones sólidas y crecimiento de utilidades, mientras que en renta fija busca crédito corporativo. La incertidumbre sobre las tasas en Estados Unidos lleva a la institución a ajustar su estrategia de inversión.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="a4799a954e5e2021" data-title="Tecnología y deuda de América Latina: inversiones que Santander ve ..." data-url="https://www.bloomberglinea.com/mercados/tecnologia-y-deuda-de-america-latina-inversiones-que-santander-ve-ante-una-fed-restrictiva?outputType=amp" data-source="bloomberglinea.com" data-category="Innovación Bancaria y Productos Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="48e3db8699edaea6">
           
           <a class="title" href="https://www.df.cl/empresas/resultados-de-empresas/el-dispar-segundo-trimestre-de-las-ipsa-bancos-y-sqm-aportaron-la-mitad-de" target="_blank" rel="noopener">El dispar segundo trimestre de las IPSA: cinco empresas aportan ...</a>
           <div class="meta">
@@ -463,6 +557,13 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Ganancias de los bancos suben 33% ayudadas por cobros de intereses en UF. Los cuatro bancos del IPSA -De Chile, Bci, Santander e Itaú- destacaron</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="48e3db8699edaea6" data-title="El dispar segundo trimestre de las IPSA: cinco empresas aportan ..." data-url="https://www.df.cl/empresas/resultados-de-empresas/el-dispar-segundo-trimestre-de-las-ipsa-bancos-y-sqm-aportaron-la-mitad-de" data-source="df.cl" data-category="Innovación Bancaria y Productos Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -470,7 +571,7 @@ footer {
             <div class="category">
               <h3>Tecnología Financiera Global</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="e8f66ff1ce93f5b3">
           <img src="https://cdn.milenio.com/uploads/media/2026/09/10/iniciativa-enmarca-compromiso-historico-banco.jpeg" alt="" loading="lazy">
           <a class="title" href="https://www.milenio.com/negocios/santander-lanza-2-mil-becas-gratuitas-ia-pymes-emprendedores" target="_blank" rel="noopener">Santander lanza 2 mil becas gratuitas en IA para Pymes y emprendedores- Grupo Milenio</a>
           <div class="meta">
@@ -480,9 +581,16 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Banco Santander, IE University y Google ofrecen 2.000 becas gratuitas para emprendedores, autónomos, microempresas y pymes interesados en impulsar la inteligencia artificial (IA) hasta el 23 de septiembre. La iniciativa se enmarca en el compromiso histórico de Banco Santander con la educación y el…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="e8f66ff1ce93f5b3" data-title="Santander lanza 2 mil becas gratuitas en IA para Pymes y emprendedores- Grupo Milenio" data-url="https://www.milenio.com/negocios/santander-lanza-2-mil-becas-gratuitas-ia-pymes-emprendedores" data-source="milenio.com" data-category="Tecnología Financiera Global">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="ddf64d1ed960c35d">
           <img src="https://s.tradingview.com/static/images/illustrations/news-story.jpg" alt="" loading="lazy">
           <a class="title" href="https://www.tradingview.com/news/zacks:d4ef58082094b:0-sofi-vs-nu-which-digital-banking-stock-will-lead-the-pack-for-now" target="_blank" rel="noopener">SoFi vs. Nu: Which Digital Banking Stock Will Lead the Pack for Now? — TradingView News</a>
           <div class="meta">
@@ -492,6 +600,13 @@ footer {
             <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">SoFi Technologies y Nu Holdings son dos empresas digitales de banca que están revolucionando el sector financiero en América Latina. Mientras que SoFi se enfoca en expandir su ecosistema en Estados Unidos, Nu opera a gran escala en Brasil, México y Colombia y busca monetizar sus clientes existentes.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="ddf64d1ed960c35d" data-title="SoFi vs. Nu: Which Digital Banking Stock Will Lead the Pack for Now? — TradingView News" data-url="https://www.tradingview.com/news/zacks:d4ef58082094b:0-sofi-vs-nu-which-digital-banking-stock-will-lead-the-pack-for-now" data-source="tradingview.com" data-category="Tecnología Financiera Global">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -511,7 +626,7 @@ footer {
             <div class="category">
               <h3>Economía y Política Monetaria Chile</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="f055941b8abd397f">
           
           <a class="title" href="https://www.elmostrador.cl/el-semanal/2026/09/10/el-incomodo-mensaje-del-banco-central-menos-crecimiento-pero-mas-inflacion" target="_blank" rel="noopener">El incómodo mensaje del Banco Central: menos crecimiento, pero más inflación</a>
           <div class="meta">
@@ -521,6 +636,13 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">También está la vieja aspiración de convertir a Santiago en un hubfinanciero regional. Servicios de gestión, asesoría y administración patrimonial prestados desde Chile a extranjeros podrán quedar exentos de IVA; determinados…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="f055941b8abd397f" data-title="El incómodo mensaje del Banco Central: menos crecimiento, pero más inflación" data-url="https://www.elmostrador.cl/el-semanal/2026/09/10/el-incomodo-mensaje-del-banco-central-menos-crecimiento-pero-mas-inflacion" data-source="elmostrador.cl" data-category="Economía y Política Monetaria Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -528,7 +650,7 @@ footer {
             <div class="category">
               <h3>IA y Tecnología Chile</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="dbac838e9d4f956c">
           
           <a class="title" href="https://uchile.cl/noticias/244684/academico-y-exestudiantes-u-de-chile-evaluan-ia-para-la-inversion" target="_blank" rel="noopener">Especialistas U. de Chile evalúan uso de inteligencia artificial para agilizar permisos de inversión - Universidad de Chile</a>
           <div class="meta">
@@ -538,9 +660,16 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">. de Chile evalúan uso de inteligencia artificial para agilizar permisos de inversión Especialistas U. de Chile evalúan IA para agilizar permisos de inversión Por otro lado, destaca la aplicación de IA en el desarrollo regulatorio en el…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="dbac838e9d4f956c" data-title="Especialistas U. de Chile evalúan uso de inteligencia artificial para agilizar permisos de inversión - Universidad de Chile" data-url="https://uchile.cl/noticias/244684/academico-y-exestudiantes-u-de-chile-evaluan-ia-para-la-inversion" data-source="uchile.cl" data-category="IA y Tecnología Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="1b209879bc3cfaaa">
           
           <a class="title" href="https://www.brinca.com/revive-impacta-ia-chile-2026" target="_blank" rel="noopener">Revive Impacta IA Chile 2026 - Brinca</a>
           <div class="meta">
@@ -550,9 +679,16 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">Impacta IA reunió a líderes para abordar los desafíos y oportunidades de la inteligencia artificial · De las posibilidades de la IA a los desafíos de su adopción.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="1b209879bc3cfaaa" data-title="Revive Impacta IA Chile 2026 - Brinca" data-url="https://www.brinca.com/revive-impacta-ia-chile-2026" data-source="brinca.com" data-category="IA y Tecnología Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="95585273b3796f24">
           
           <a class="title" href="https://www.df.cl/economia-y-politica/comercio-exterior/alerta-para-chile-freno-al-auge-de-la-ia-podria-impactar-crecimiento" target="_blank" rel="noopener">¿Alerta para Chile? Freno al auge de la IA podría impactar crecimiento global | Diario Financiero</a>
           <div class="meta">
@@ -562,6 +698,13 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">El auge de la inteligencia artificial (IA) ha tenido un efecto dinamizador en la economía global, sosteniendo el rally de mercados financieros, empujando la inversión y llevando al cobre a niveles históricos de US$ 6 la libra. Pero aquello…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="95585273b3796f24" data-title="¿Alerta para Chile? Freno al auge de la IA podría impactar crecimiento global | Diario Financiero" data-url="https://www.df.cl/economia-y-politica/comercio-exterior/alerta-para-chile-freno-al-auge-de-la-ia-podria-impactar-crecimiento" data-source="df.cl" data-category="IA y Tecnología Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -569,7 +712,7 @@ footer {
             <div class="category">
               <h3>Innovación Bancaria y Productos Chile</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="31cc4dd6b6b10052">
           
           <a class="title" href="https://www.trendtic.cl/2026/09/la-nueva-ley-fintech-cambiara-algo-mas-que-los-pagos-tambien-transformara-la-forma-de-contratar-seguros" target="_blank" rel="noopener">La nueva Ley Fintech cambiará algo más que los pagos: también transformará la forma de contratar seguros</a>
           <div class="meta">
@@ -579,9 +722,16 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">Y Chile reúne hoy las condiciones para convertirse en uno de los mercados más dinámicos de América Latina para este modelo. Este cambio encuentra un terreno especialmente fértil en Chile. Según la Comisión para el Mercado Financiero (CMF),…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="31cc4dd6b6b10052" data-title="La nueva Ley Fintech cambiará algo más que los pagos: también transformará la forma de contratar seguros" data-url="https://www.trendtic.cl/2026/09/la-nueva-ley-fintech-cambiara-algo-mas-que-los-pagos-tambien-transformara-la-forma-de-contratar-seguros" data-source="trendtic.cl" data-category="Innovación Bancaria y Productos Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="908a587eec1b3253">
           
           <a class="title" href="https://www.larepublica.co/globoeconomia/chile-busca-revitalizar-un-reducto-tranquilo-de-la-deuda-latinoamericana-4478759" target="_blank" rel="noopener">Chile busca revitalizar uno de los últimos refugios de estabilidad de deuda en América Latina</a>
           <div class="meta">
@@ -591,9 +741,16 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">La propuesta "debería profundizar el mercado secundario, mejorar la determinación de precios y reducir algunas de las primas de liquidez en el mercado local de renta fija", dijo Marco Gallardo, subdirector de renta fija de Bice .…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="908a587eec1b3253" data-title="Chile busca revitalizar uno de los últimos refugios de estabilidad de deuda en América Latina" data-url="https://www.larepublica.co/globoeconomia/chile-busca-revitalizar-un-reducto-tranquilo-de-la-deuda-latinoamericana-4478759" data-source="larepublica.co" data-category="Innovación Bancaria y Productos Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="dc00c749100190b7">
           
           <a class="title" href="https://www.df.cl/internacional/ft/silicon-valley-vuelve-a-apostar-por-lo-imposible-gracias-a-la-inteligencia" target="_blank" rel="noopener">Silicon Valley vuelve a apostar por lo imposible gracias a la ...</a>
           <div class="meta">
@@ -603,6 +760,13 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">Revisa aquí la nota completa Cushman & Wakefield Chile []( Hace 10 años Santander redefinió el concepto de sucursal bancaria con un modelo que integra atención financiera, cowork y cafetería en un mismo espacio. Santander []( La…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="dc00c749100190b7" data-title="Silicon Valley vuelve a apostar por lo imposible gracias a la ..." data-url="https://www.df.cl/internacional/ft/silicon-valley-vuelve-a-apostar-por-lo-imposible-gracias-a-la-inteligencia" data-source="df.cl" data-category="Innovación Bancaria y Productos Chile">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -610,7 +774,7 @@ footer {
             <div class="category">
               <h3>Tecnología Financiera Global</h3>
               
-        <article class="card">
+        <article class="card" data-article-id="e08c970f795007ca">
           
           <a class="title" href="https://mexicobusiness.news/finance/news/hacienda-seeks-35-deficit-2027-digital-economy-law-proposal" target="_blank" rel="noopener">Hacienda Seeks 3.5% Deficit in 2027; Digital Economy Law Proposal</a>
           <div class="meta">
@@ -620,9 +784,16 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">"Latin America — and . Following its January 2026 consolidation under Apax funds, the EU financial software group generates €200 million (US$230 million) in revenue while allocating €20 million annually to R&D to embed autonomous AI agents…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="e08c970f795007ca" data-title="Hacienda Seeks 3.5% Deficit in 2027; Digital Economy Law Proposal" data-url="https://mexicobusiness.news/finance/news/hacienda-seeks-35-deficit-2027-digital-economy-law-proposal" data-source="mexicobusiness.news" data-category="Tecnología Financiera Global">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="0410eebb1aa4b74a">
           
           <a class="title" href="https://www.pymnts.com/news/banking/2026/nu-partners-with-lead-bank-launch-full-unitd-states-banking-suite" target="_blank" rel="noopener">Nu Partners With Lead Bank to Launch Full US Banking Suite</a>
           <div class="meta">
@@ -632,9 +803,16 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">“Since our founding, we have believed that consumer-obsessed digital banking is the future of retail banking globally, and after proving this hypothesis with over 140 million fanatical customers in Latin America, we are excited to start…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="0410eebb1aa4b74a" data-title="Nu Partners With Lead Bank to Launch Full US Banking Suite" data-url="https://www.pymnts.com/news/banking/2026/nu-partners-with-lead-bank-launch-full-unitd-states-banking-suite" data-source="pymnts.com" data-category="Tecnología Financiera Global">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
-        <article class="card">
+        <article class="card" data-article-id="602d9208b7a7fcad">
           
           <a class="title" href="https://elcomercio.pe/economia/negocios/nu-lanza-operaciones-en-estados-unidos-y-presenta-nu-global-producto-del-banco-digital-que-se-expandira-al-peru-y-a-mas-de-35-paises-noticia" target="_blank" rel="noopener">Nu lanza operaciones en EE.UU. y presenta “Nu Global”, producto del banco digital que se expandirá al Perú y a más de 35 países</a>
           <div class="meta">
@@ -644,6 +822,13 @@ footer {
             <span class="badge today">hoy</span>
           </div>
           <p class="summary">. .UU. y presenta “Nu Global”, producto del banco digital que se expandirá al Perú y a más de 35 países Nu lanza operaciones en EE.UU. y presenta “Nu Global”, producto del banco digital que se expandirá al Perú y a más de 35 países Perú vs.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="602d9208b7a7fcad" data-title="Nu lanza operaciones en EE.UU. y presenta “Nu Global”, producto del banco digital que se expandirá al Perú y a más de 35 países" data-url="https://elcomercio.pe/economia/negocios/nu-lanza-operaciones-en-estados-unidos-y-presenta-nu-global-producto-del-banco-digital-que-se-expandira-al-peru-y-a-mas-de-35-paises-noticia" data-source="elcomercio.pe" data-category="Tecnología Financiera Global">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         
             </div>
@@ -683,6 +868,78 @@ footer {
             e.preventDefault();
             toggle();
           }
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function() {
+      var SUPABASE_URL = 'https://kmezymgnxyhsojruznmn.supabase.co';
+      var SUPABASE_ANON_KEY = 'sb_publishable_qMS6zyfQ5tH3GW9eUT9M0w_5T4TsYgs';
+      var TABLE = 'newsletter_ratings';
+      if (!SUPABASE_ANON_KEY) return;
+
+      function saveRating(articleId, articleUrl, title, source, category, stars) {
+        var payload = JSON.stringify({
+          article_id: articleId,
+          article_url: articleUrl,
+          title: title,
+          source: source,
+          category: category,
+          stars: stars
+        });
+        return fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: payload
+        });
+      }
+
+      document.querySelectorAll('.stars').forEach(function(container) {
+        var articleId = container.getAttribute('data-article-id');
+        var articleUrl = container.getAttribute('data-url');
+        var title = container.getAttribute('data-title');
+        var source = container.getAttribute('data-source');
+        var category = container.getAttribute('data-category');
+        var stars = container.querySelectorAll('.star');
+        var feedback = container.parentElement.querySelector('.feedback');
+
+        function setVisual(value) {
+          stars.forEach(function(s) {
+            var starValue = parseInt(s.getAttribute('data-stars'), 10);
+            s.classList.toggle('rated', starValue <= value);
+            s.classList.toggle('active', starValue === value);
+          });
+        }
+
+        stars.forEach(function(star) {
+          star.addEventListener('mouseenter', function() {
+            setVisual(parseInt(star.getAttribute('data-stars'), 10));
+          });
+          star.addEventListener('mouseleave', function() {
+            stars.forEach(function(s) { s.classList.remove('rated', 'active'); });
+          });
+          star.addEventListener('click', function() {
+            var value = parseInt(star.getAttribute('data-stars'), 10);
+            setVisual(value);
+            saveRating(articleId, articleUrl, title, source, category, value).then(function(resp) {
+              if (resp && resp.ok) {
+                if (feedback) {
+                  feedback.classList.add('visible');
+                  setTimeout(function() { feedback.classList.remove('visible'); }, 2000);
+                }
+              } else if (resp) {
+                console.error('Error guardando calificación:', resp.statusText);
+              }
+            }).catch(function(err) {
+              console.error('Error guardando calificación:', err);
+            });
+          });
         });
       });
     })();

@@ -21,6 +21,28 @@ SEEN_FILE = DATA_DIR / "seen.json"
 NEWS_FILE = DATA_DIR / "news.json"
 HTML_FILE = ROOT / "index.html"
 
+# Configuración de Supabase para calificaciones (clave pública; se carga de config local)
+SUPABASE_URL = "https://kmezymgnxyhsojruznmn.supabase.co"
+SUPABASE_RATINGS_TABLE = "newsletter_ratings"
+SUPABASE_CONFIG_FILE = DATA_DIR / "supabase_config.json"
+
+
+def load_supabase_anon_key() -> str:
+    """Load Supabase anon key from local config or env var."""
+    import os
+    env_key = os.environ.get("SUPABASE_ANON_KEY", "").strip()
+    if env_key:
+        return env_key
+    if SUPABASE_CONFIG_FILE.exists():
+        try:
+            cfg = json.loads(SUPABASE_CONFIG_FILE.read_text(encoding="utf-8"))
+            key = cfg.get("anon_key", "").strip()
+            if key:
+                return key
+        except Exception:
+            pass
+    return ""
+
 DAILY_QUOTES = [
     '"La mejor manera de predecir el futuro es crearlo." — Peter Drucker',
     '"La innovación distingue al líder del seguidor." — Steve Jobs',
@@ -505,7 +527,7 @@ def enrich_item(item: Dict[str, Any]) -> Dict[str, Any]:
     return item
 
 
-def collect_news() -> List[Dict[str, Any]]:
+def collect_news(ratings: Dict[str, Any] = None) -> List[Dict[str, Any]]:
     all_results = []
     for topic in TOPICS:
         for query in topic["queries"]:
@@ -539,6 +561,9 @@ def collect_news() -> List[Dict[str, Any]]:
     merged = dedupe_and_merge(deduped_results, seen)
     for m in merged:
         m["category"] = classify_category(m["title"], m["summary"], m["url"])
+        if ratings:
+            adj = rating_adjustment(m, ratings)
+            m["score"] = max(0.0, min(1.0, m.get("score", 0.0) + adj))
 
     # Enrich top items with clean extraction and AI summaries (limit to avoid long runs)
     for item in merged[:8]:
@@ -546,6 +571,9 @@ def collect_news() -> List[Dict[str, Any]]:
             enrich_item(item)
         except Exception as e:
             print(f"Enrichment failed for {item.get('url', '')}: {e}")
+
+    # Re-sort after score adjustments and enrichment
+    merged.sort(key=lambda x: x.get("score", 0.0), reverse=True)
 
     return merged
 
@@ -559,6 +587,10 @@ def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 
             chile_items.append(item)
         else:
             global_items.append(item)
+
+    # Sort each bucket by score descending
+    chile_items.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+    global_items.sort(key=lambda x: x.get("score", 0.0), reverse=True)
 
     selected = []
     selected.extend(chile_items[:total_limit])
@@ -607,6 +639,71 @@ def format_card_date(published_str: str) -> str:
         return dt.strftime("%d/%m/%Y · %H:%M")
     except Exception:
         return published_str
+
+
+def fetch_supabase_ratings() -> Dict[str, Any]:
+    """Fetch aggregated ratings from Supabase."""
+    anon_key = load_supabase_anon_key()
+    if not anon_key:
+        print("Supabase anon key no configurada; no se cargan calificaciones.")
+        return {}
+    url = f"{SUPABASE_URL}/rest/v1/{SUPABASE_RATINGS_TABLE}?select=article_id,source,category,stars"
+    try:
+        req = urllib.request.Request(
+            url,
+            headers={
+                "apikey": anon_key,
+                "Authorization": f"Bearer {anon_key}",
+            },
+            method="GET",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            rows = json.loads(resp.read().decode("utf-8"))
+    except Exception as e:
+        print(f"Error leyendo calificaciones de Supabase: {e}")
+        return {}
+
+    by_source: Dict[str, List[int]] = {}
+    by_category: Dict[str, List[int]] = {}
+    by_article: Dict[str, List[int]] = {}
+
+    for row in rows:
+        stars = row.get("stars")
+        if not isinstance(stars, int) or not (1 <= stars <= 5):
+            continue
+        for bucket, key in [(by_source, row.get("source")), (by_category, row.get("category")), (by_article, row.get("article_id"))]:
+            if key:
+                bucket.setdefault(key, []).append(stars)
+
+    def avg(vals: List[int]) -> float:
+        return sum(vals) / len(vals) if vals else 3.0
+
+    return {
+        "by_source": {k: avg(v) for k, v in by_source.items()},
+        "by_category": {k: avg(v) for k, v in by_category.items()},
+        "by_article": {k: avg(v) for k, v in by_article.items()},
+    }
+
+
+def rating_adjustment(item: Dict[str, Any], ratings: Dict[str, Any]) -> float:
+    """Compute a score boost/penalty based on historical ratings."""
+    by_source = ratings.get("by_source", {})
+    by_category = ratings.get("by_category", {})
+    by_article = ratings.get("by_article", {})
+
+    source = item.get("source", "")
+    category = item.get("category", "General")
+    article_id = item.get("id", "")
+
+    adjustments = []
+    if article_id and article_id in by_article:
+        adjustments.append((by_article[article_id] - 3) * 0.3)
+    if source and source in by_source:
+        adjustments.append((by_source[source] - 3) * 0.2)
+    if category and category in by_category:
+        adjustments.append((by_category[category] - 3) * 0.15)
+
+    return sum(adjustments) if adjustments else 0.0
 
 
 def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "El Brief de Kay", daily_quote: str = "") -> str:
@@ -906,6 +1003,51 @@ header.top .meta-line {
   color: #854d0e;
 }
 
+.rating {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.rating .stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rating .star {
+  cursor: pointer;
+  font-size: 1.15rem;
+  color: var(--text-light);
+  transition: color 0.15s ease, transform 0.1s ease;
+  line-height: 1;
+}
+
+.rating .star:hover,
+.rating .star.active {
+  color: #f59e0b;
+  transform: scale(1.1);
+}
+
+.rating .star.rated {
+  color: #f59e0b;
+}
+
+.rating .feedback {
+  font-size: 0.72rem;
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.rating .feedback.visible {
+  opacity: 1;
+}
+
 .summary {
   font-size: 0.98rem;
   color: var(--text);
@@ -939,7 +1081,7 @@ footer {
 }
 """.strip()
 
-    def card_html(item: Dict[str, Any], section_date: str) -> str:
+    def card_html(item: Dict[str, Any], section_date: str, supabase_anon_key: str) -> str:
         image_html = ""
         if item.get("image"):
             image_html = f'<img src="{item["image"]}" alt="" loading="lazy">'
@@ -951,8 +1093,15 @@ footer {
             badge_class = "yesterday"
         badge_html = f'<span class="badge {badge_class}">{relative_badge}</span>' if relative_badge else ""
         card_date = format_card_date(item.get("published", ""))
+        article_id = item.get("id", "")
+        title_escaped = item['title'].replace('"', '\\"')
+        category_escaped = item.get('category', 'General').replace('"', '\\"')
+        stars_html = "".join(
+            f'<span class="star" data-stars="{s}" title="{s} estrella{"s" if s != 1 else ""}">★</span>'
+            for s in range(1, 6)
+        )
         return f"""
-        <article class="card">
+        <article class="card" data-article-id="{article_id}">
           {image_html}
           <a class="title" href="{item['url']}" target="_blank" rel="noopener">{item['title']}</a>
           <div class="meta">
@@ -962,11 +1111,19 @@ footer {
             {badge_html}
           </div>
           <p class="summary">{item.get('summary', '')}</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="{article_id}" data-title="{title_escaped}" data-url="{item['url']}" data-source="{item['source']}" data-category="{category_escaped}">
+              {stars_html}
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
         </article>
         """
 
     sections = []
     sorted_dates = sorted(news_by_date.keys(), reverse=True)
+    supabase_anon_key = load_supabase_anon_key()
     for idx, date in enumerate(sorted_dates):
         items = news_by_date[date]
         grouped: Dict[str, List[Dict[str, Any]]] = {}
@@ -977,7 +1134,7 @@ footer {
             categories_html += f"""
             <div class="category">
               <h3>{category}</h3>
-              {"".join(card_html(i, date) for i in grouped[category])}
+              {"".join(card_html(i, date, supabase_anon_key) for i in grouped[category])}
             </div>
             """
         expanded = "true" if idx == 0 else "false"
@@ -1060,6 +1217,78 @@ footer {
       }});
     }})();
   </script>
+  <script>
+    (function() {{
+      var SUPABASE_URL = '{SUPABASE_URL}';
+      var SUPABASE_ANON_KEY = '{supabase_anon_key}';
+      var TABLE = '{SUPABASE_RATINGS_TABLE}';
+      if (!SUPABASE_ANON_KEY) return;
+
+      function saveRating(articleId, articleUrl, title, source, category, stars) {{
+        var payload = JSON.stringify({{
+          article_id: articleId,
+          article_url: articleUrl,
+          title: title,
+          source: source,
+          category: category,
+          stars: stars
+        }});
+        return fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {{
+          method: 'POST',
+          headers: {{
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          }},
+          body: payload
+        }});
+      }}
+
+      document.querySelectorAll('.stars').forEach(function(container) {{
+        var articleId = container.getAttribute('data-article-id');
+        var articleUrl = container.getAttribute('data-url');
+        var title = container.getAttribute('data-title');
+        var source = container.getAttribute('data-source');
+        var category = container.getAttribute('data-category');
+        var stars = container.querySelectorAll('.star');
+        var feedback = container.parentElement.querySelector('.feedback');
+
+        function setVisual(value) {{
+          stars.forEach(function(s) {{
+            var starValue = parseInt(s.getAttribute('data-stars'), 10);
+            s.classList.toggle('rated', starValue <= value);
+            s.classList.toggle('active', starValue === value);
+          }});
+        }}
+
+        stars.forEach(function(star) {{
+          star.addEventListener('mouseenter', function() {{
+            setVisual(parseInt(star.getAttribute('data-stars'), 10));
+          }});
+          star.addEventListener('mouseleave', function() {{
+            stars.forEach(function(s) {{ s.classList.remove('rated', 'active'); }});
+          }});
+          star.addEventListener('click', function() {{
+            var value = parseInt(star.getAttribute('data-stars'), 10);
+            setVisual(value);
+            saveRating(articleId, articleUrl, title, source, category, value).then(function(resp) {{
+              if (resp && resp.ok) {{
+                if (feedback) {{
+                  feedback.classList.add('visible');
+                  setTimeout(function() {{ feedback.classList.remove('visible'); }}, 2000);
+                }}
+              }} else if (resp) {{
+                console.error('Error guardando calificación:', resp.statusText);
+              }}
+            }}).catch(function(err) {{
+              console.error('Error guardando calificación:', err);
+            }});
+          }});
+        }});
+      }});
+    }})();
+  </script>
 </body>
 </html>
 """
@@ -1076,7 +1305,10 @@ def main(regenerate_only: bool = False):
     daily_quote = DAILY_QUOTES[datetime.now(timezone.utc).day % len(DAILY_QUOTES)]
 
     if not regenerate_only:
-        new_items = collect_news()
+        ratings = fetch_supabase_ratings()
+        if ratings:
+            print(f"Calificaciones cargadas: {len(ratings.get('by_article', {}))} artículos, {len(ratings.get('by_source', {}))} fuentes, {len(ratings.get('by_category', {}))} categorías")
+        new_items = collect_news(ratings=ratings)
         new_items = select_items_chile_priority(new_items, total_limit=10, max_global=3)
 
         per_category_limit = 6
