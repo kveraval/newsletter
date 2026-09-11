@@ -10,14 +10,15 @@
 
 :root {
   --bg: #ffffff;
-  --surface: #fafafa;
+  --surface: #f8fafc;
   --card: #ffffff;
   --text: #1f2937;
-  --text-muted: #6b7280;
-  --text-light: #9ca3af;
+  --text-muted: #475569;
+  --text-light: #64748b;
   --accent: #2563eb;
   --accent-soft: #eff6ff;
-  --border: #e5e7eb;
+  --accent-dark: #1d4ed8;
+  --border: #e2e8f0;
   --radius: 12px;
   --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -98,30 +99,45 @@ header.top .meta-line {
 }
 
 .date-section {
-  margin-bottom: 56px;
+  margin-bottom: 64px;
+  padding-top: 8px;
 }
 
 .date-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin: 0 0 28px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--text);
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .date-header h2 {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .date-header .count {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-size: 0.82rem;
   font-weight: 500;
+  background: rgba(255,255,255,0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.date-divider {
+  height: 2px;
+  background: var(--border);
+  margin: 0 0 32px;
+  border-radius: 1px;
 }
 
 .category {
@@ -172,7 +188,7 @@ header.top .meta-line {
   font-family: var(--font-head);
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   line-height: 1.35;
 }
 
@@ -182,11 +198,12 @@ header.top .meta-line {
 
 .meta {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-light);
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .meta .source {
@@ -199,6 +216,29 @@ header.top .meta-line {
   height: 3px;
   background: var(--text-light);
   border-radius: 50%;
+}
+
+.meta .badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.meta .badge.today {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.meta .badge.yesterday {
+  background: #fef9c3;
+  color: #854d0e;
 }
 
 .summary {
@@ -225,9 +265,12 @@ footer {
 @media (max-width: 560px) {
   .container { padding: 32px 18px 48px; }
   header.top h1 { font-size: 2rem; }
+  .date-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .date-header .count { align-self: flex-end; }
   .card { padding: 18px 20px; }
   .card a.title { font-size: 1.1rem; }
   .card img { height: 140px; }
+  .meta { gap: 6px; }
 }</style>
 </head>
 <body>
@@ -239,16 +282,17 @@ footer {
       <p class="subtitle">Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
       <p class="quote">"La innovación distingue al líder del seguidor." — Steve Jobs</p>
       <div class="meta-line">
-        <span>Actualizado: 2026-09-11 10:04 UTC</span>
+        <span>Actualizado: 2026-09-11 18:14 UTC</span>
       </div>
     </header>
     <main>
       
         <section class="date-section">
           <div class="date-header">
-            <h2>2026-09-11</h2>
+            <h2>viernes 11 de septiembre de 2026</h2>
             <span class="count">10 noticias</span>
           </div>
+          <div class="date-divider"></div>
           
             <div class="category">
               <h3>Economía y Política Monetaria Chile</h3>
@@ -259,7 +303,8 @@ footer {
           <div class="meta">
             <span class="source">auroranoticias.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 10:56:41 GMT</span>
+            <span>10/09/2026 · 10:56</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">El Banco Central de Chile mantuvo la Tasa de Interés de Política Monetaria en 4,5% debido a la encrucijada entre controlar la inflación y apoyar un economía local que no despega. La institución se enfrenta a una situación internacional incierta y globalizada.</p>
         </article>
@@ -270,7 +315,8 @@ footer {
           <div class="meta">
             <span class="source">bloomberglinea.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 14:47:12 GMT</span>
+            <span>10/09/2026 · 14:47</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Los bancos son la elección sectorial principal en Chile. Citi considera que llegan a la recuperación económica con calidad de activos, capitalización y rentabilidad saludables. El costo de riesgo del sector era de 1,12% en junio de 2026,…</p>
         </article>
@@ -286,7 +332,8 @@ footer {
           <div class="meta">
             <span class="source">trendtic.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 09:00:00 GMT</span>
+            <span>10/09/2026 · 09:00</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Entre los principales tópicos abordados destacan las brechas más comunes en la gestión diaria de las pequeñas empresas: la mezcla de finanzas personales y las del negocio, el escaso control del flujo de caja, la dificultad para fijar…</p>
         </article>
@@ -297,7 +344,8 @@ footer {
           <div class="meta">
             <span class="source">fch.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 15:35:08 GMT</span>
+            <span>10/09/2026 · 15:35</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">La Fundación Chile ha anunciado sus 36 finalistas para el Premio Avonni 2026, un reconocimiento a las mujeres que han logrado destacarse en su sector o profesión. Las candidatas son seleccionadas por una comisión de expertos y serán evaluadas en diferentes categorías para determinar las ganadoras…</p>
         </article>
@@ -308,7 +356,8 @@ footer {
           <div class="meta">
             <span class="source">reporteminero.cl</span>
             <span class="dot"></span>
-            <span>Fri, 11 Sep 2026 01:00:00 GMT</span>
+            <span>11/09/2026 · 01:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">Una startup chilena, Discovery AI, clasificó como finalista del programa ScaleUp Boost con una solución de inteligencia artificial para la minería, accediendo a cofinanciamiento Corfo de hasta 60 millones de pesos. La plataforma AIM utiliza procesamiento de lenguaje natural para analizar…</p>
         </article>
@@ -324,7 +373,8 @@ footer {
           <div class="meta">
             <span class="source">itsitio.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 21:47:41 GMT</span>
+            <span>10/09/2026 · 21:47</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">* [facebook](https://www.facebook.com/itsitio "Facebook") * [x](https://x.com/itsitio "X") * [linkedin](https://www.linkedin.com/company/itsitio/posts/?feedView=all "Instagram") * [youtube](https://www.youtube.com/itsitiov) *…</p>
         </article>
@@ -335,7 +385,8 @@ footer {
           <div class="meta">
             <span class="source">bloomberglinea.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 20:14:18 GMT</span>
+            <span>10/09/2026 · 20:14</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Santander se está preparando para una Fed restrictiva al enfocarse en inversiones sólidas y crecimiento de utilidades, mientras que en renta fija busca crédito corporativo. La incertidumbre sobre las tasas en Estados Unidos lleva a la institución a ajustar su estrategia de inversión.</p>
         </article>
@@ -346,7 +397,8 @@ footer {
           <div class="meta">
             <span class="source">df.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 21:00:00 GMT</span>
+            <span>10/09/2026 · 21:00</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Ganancias de los bancos suben 33% ayudadas por cobros de intereses en UF. Los cuatro bancos del IPSA -De Chile, Bci, Santander e Itaú- destacaron</p>
         </article>
@@ -362,7 +414,8 @@ footer {
           <div class="meta">
             <span class="source">milenio.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 16:25:00 GMT</span>
+            <span>10/09/2026 · 16:25</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">Banco Santander, IE University y Google ofrecen 2.000 becas gratuitas para emprendedores, autónomos, microempresas y pymes interesados en impulsar la inteligencia artificial (IA) hasta el 23 de septiembre. La iniciativa se enmarca en el compromiso histórico de Banco Santander con la educación y el…</p>
         </article>
@@ -373,7 +426,8 @@ footer {
           <div class="meta">
             <span class="source">tradingview.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 16:44:00 GMT</span>
+            <span>10/09/2026 · 16:44</span>
+            <span class="badge yesterday">ayer</span>
           </div>
           <p class="summary">SoFi Technologies y Nu Holdings son dos empresas digitales de banca que están revolucionando el sector financiero en América Latina. Mientras que SoFi se enfoca en expandir su ecosistema en Estados Unidos, Nu opera a gran escala en Brasil, México y Colombia y busca monetizar sus clientes existentes.</p>
         </article>
@@ -384,9 +438,10 @@ footer {
         
         <section class="date-section">
           <div class="date-header">
-            <h2>2026-09-10</h2>
+            <h2>jueves 10 de septiembre de 2026</h2>
             <span class="count">10 noticias</span>
           </div>
+          <div class="date-divider"></div>
           
             <div class="category">
               <h3>Economía y Política Monetaria Chile</h3>
@@ -397,7 +452,8 @@ footer {
           <div class="meta">
             <span class="source">elmostrador.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 16:00:00 GMT</span>
+            <span>10/09/2026 · 16:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">También está la vieja aspiración de convertir a Santiago en un hubfinanciero regional. Servicios de gestión, asesoría y administración patrimonial prestados desde Chile a extranjeros podrán quedar exentos de IVA; determinados…</p>
         </article>
@@ -413,7 +469,8 @@ footer {
           <div class="meta">
             <span class="source">uchile.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 17:00:00 GMT</span>
+            <span>10/09/2026 · 17:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">. de Chile evalúan uso de inteligencia artificial para agilizar permisos de inversión Especialistas U. de Chile evalúan IA para agilizar permisos de inversión Por otro lado, destaca la aplicación de IA en el desarrollo regulatorio en el…</p>
         </article>
@@ -424,7 +481,8 @@ footer {
           <div class="meta">
             <span class="source">brinca.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 20:00:00 GMT</span>
+            <span>10/09/2026 · 20:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">Impacta IA reunió a líderes para abordar los desafíos y oportunidades de la inteligencia artificial · De las posibilidades de la IA a los desafíos de su adopción.</p>
         </article>
@@ -435,7 +493,8 @@ footer {
           <div class="meta">
             <span class="source">df.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 07:00:00 GMT</span>
+            <span>10/09/2026 · 07:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">El auge de la inteligencia artificial (IA) ha tenido un efecto dinamizador en la economía global, sosteniendo el rally de mercados financieros, empujando la inversión y llevando al cobre a niveles históricos de US$ 6 la libra. Pero aquello…</p>
         </article>
@@ -451,7 +510,8 @@ footer {
           <div class="meta">
             <span class="source">trendtic.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 08:00:00 GMT</span>
+            <span>10/09/2026 · 08:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">Y Chile reúne hoy las condiciones para convertirse en uno de los mercados más dinámicos de América Latina para este modelo. Este cambio encuentra un terreno especialmente fértil en Chile. Según la Comisión para el Mercado Financiero (CMF),…</p>
         </article>
@@ -462,7 +522,8 @@ footer {
           <div class="meta">
             <span class="source">larepublica.co</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 15:12:58 GMT</span>
+            <span>10/09/2026 · 15:12</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">La propuesta "debería profundizar el mercado secundario, mejorar la determinación de precios y reducir algunas de las primas de liquidez en el mercado local de renta fija", dijo Marco Gallardo, subdirector de renta fija de Bice .…</p>
         </article>
@@ -473,7 +534,8 @@ footer {
           <div class="meta">
             <span class="source">df.cl</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 12:00:00 GMT</span>
+            <span>10/09/2026 · 12:00</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">Revisa aquí la nota completa Cushman & Wakefield Chile []( Hace 10 años Santander redefinió el concepto de sucursal bancaria con un modelo que integra atención financiera, cowork y cafetería en un mismo espacio. Santander []( La…</p>
         </article>
@@ -489,7 +551,8 @@ footer {
           <div class="meta">
             <span class="source">mexicobusiness.news</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 17:58:18 GMT</span>
+            <span>10/09/2026 · 17:58</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">"Latin America — and . Following its January 2026 consolidation under Apax funds, the EU financial software group generates €200 million (US$230 million) in revenue while allocating €20 million annually to R&D to embed autonomous AI agents…</p>
         </article>
@@ -500,7 +563,8 @@ footer {
           <div class="meta">
             <span class="source">pymnts.com</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 21:35:27 GMT</span>
+            <span>10/09/2026 · 21:35</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">“Since our founding, we have believed that consumer-obsessed digital banking is the future of retail banking globally, and after proving this hypothesis with over 140 million fanatical customers in Latin America, we are excited to start…</p>
         </article>
@@ -511,7 +575,8 @@ footer {
           <div class="meta">
             <span class="source">elcomercio.pe</span>
             <span class="dot"></span>
-            <span>Thu, 10 Sep 2026 22:01:00 GMT</span>
+            <span>10/09/2026 · 22:01</span>
+            <span class="badge today">hoy</span>
           </div>
           <p class="summary">. .UU. y presenta “Nu Global”, producto del banco digital que se expandirá al Perú y a más de 35 países Nu lanza operaciones en EE.UU. y presenta “Nu Global”, producto del banco digital que se expandirá al Perú y a más de 35 países Perú vs.</p>
         </article>

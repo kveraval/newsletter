@@ -11,6 +11,7 @@ import subprocess
 import sys
 import urllib.request
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 from typing import List, Dict, Any
 
@@ -567,20 +568,62 @@ def select_items_chile_priority(items: List[Dict[str, Any]], total_limit: int = 
     return selected
 
 
+def format_date_header(date_str: str) -> str:
+    """Format YYYY-MM-DD to a human-readable Spanish date."""
+    try:
+        dt = datetime.strptime(date_str, "%Y-%m-%d")
+        weekdays = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado", "domingo"]
+        months = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+        return f"{weekdays[dt.weekday()]} {dt.day} de {months[dt.month - 1]} de {dt.year}"
+    except Exception:
+        return date_str
+
+
+def format_relative_badge(published_str: str, section_date: str) -> str:
+    """Return a small human-readable badge for how recent an article is."""
+    if not published_str:
+        return ""
+    try:
+        pub_dt = parsedate_to_datetime(published_str)
+        section_dt = datetime.strptime(section_date, "%Y-%m-%d")
+        delta_days = (section_dt.date() - pub_dt.date()).days
+        if delta_days == 0:
+            return "hoy"
+        elif delta_days == 1:
+            return "ayer"
+        elif delta_days < 7:
+            return f"hace {delta_days} días"
+        return ""
+    except Exception:
+        return ""
+
+
+def format_card_date(published_str: str) -> str:
+    """Return a short readable date from an RSS/HTTP date string."""
+    if not published_str:
+        return ""
+    try:
+        dt = parsedate_to_datetime(published_str)
+        return dt.strftime("%d/%m/%Y · %H:%M")
+    except Exception:
+        return published_str
+
+
 def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "El Brief de Kay", daily_quote: str = "") -> str:
     css = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
 :root {
   --bg: #ffffff;
-  --surface: #fafafa;
+  --surface: #f8fafc;
   --card: #ffffff;
   --text: #1f2937;
-  --text-muted: #6b7280;
-  --text-light: #9ca3af;
+  --text-muted: #475569;
+  --text-light: #64748b;
   --accent: #2563eb;
   --accent-soft: #eff6ff;
-  --border: #e5e7eb;
+  --accent-dark: #1d4ed8;
+  --border: #e2e8f0;
   --radius: 12px;
   --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -661,30 +704,45 @@ header.top .meta-line {
 }
 
 .date-section {
-  margin-bottom: 56px;
+  margin-bottom: 64px;
+  padding-top: 8px;
 }
 
 .date-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   margin: 0 0 28px;
-  padding-bottom: 12px;
-  border-bottom: 2px solid var(--text);
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .date-header h2 {
   margin: 0;
   font-family: var(--font-head);
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .date-header .count {
-  color: var(--text-muted);
-  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-size: 0.82rem;
   font-weight: 500;
+  background: rgba(255,255,255,0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.date-divider {
+  height: 2px;
+  background: var(--border);
+  margin: 0 0 32px;
+  border-radius: 1px;
 }
 
 .category {
@@ -735,7 +793,7 @@ header.top .meta-line {
   font-family: var(--font-head);
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   line-height: 1.35;
 }
 
@@ -745,11 +803,12 @@ header.top .meta-line {
 
 .meta {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--text-light);
   margin-bottom: 10px;
+  flex-wrap: wrap;
 }
 
 .meta .source {
@@ -762,6 +821,29 @@ header.top .meta-line {
   height: 3px;
   background: var(--text-light);
   border-radius: 50%;
+}
+
+.meta .badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.meta .badge.today {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.meta .badge.yesterday {
+  background: #fef9c3;
+  color: #854d0e;
 }
 
 .summary {
@@ -788,16 +870,27 @@ footer {
 @media (max-width: 560px) {
   .container { padding: 32px 18px 48px; }
   header.top h1 { font-size: 2rem; }
+  .date-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .date-header .count { align-self: flex-end; }
   .card { padding: 18px 20px; }
   .card a.title { font-size: 1.1rem; }
   .card img { height: 140px; }
+  .meta { gap: 6px; }
 }
 """.strip()
 
-    def card_html(item: Dict[str, Any]) -> str:
+    def card_html(item: Dict[str, Any], section_date: str) -> str:
         image_html = ""
         if item.get("image"):
             image_html = f'<img src="{item["image"]}" alt="" loading="lazy">'
+        relative_badge = format_relative_badge(item.get("published", ""), section_date)
+        badge_class = ""
+        if relative_badge == "hoy":
+            badge_class = "today"
+        elif relative_badge == "ayer":
+            badge_class = "yesterday"
+        badge_html = f'<span class="badge {badge_class}">{relative_badge}</span>' if relative_badge else ""
+        card_date = format_card_date(item.get("published", ""))
         return f"""
         <article class="card">
           {image_html}
@@ -805,7 +898,8 @@ footer {
           <div class="meta">
             <span class="source">{item['source']}</span>
             <span class="dot"></span>
-            <span>{item.get('published', '')}</span>
+            <span>{card_date}</span>
+            {badge_html}
           </div>
           <p class="summary">{item.get('summary', '')}</p>
         </article>
@@ -822,15 +916,16 @@ footer {
             categories_html += f"""
             <div class="category">
               <h3>{category}</h3>
-              {"".join(card_html(i) for i in grouped[category])}
+              {"".join(card_html(i, date) for i in grouped[category])}
             </div>
             """
         sections.append(f"""
         <section class="date-section">
           <div class="date-header">
-            <h2>{date}</h2>
+            <h2>{format_date_header(date)}</h2>
             <span class="count">{len(items)} noticia{'s' if len(items) != 1 else ''}</span>
           </div>
+          <div class="date-divider"></div>
           {categories_html}
         </section>
         """)
