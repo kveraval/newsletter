@@ -499,6 +499,11 @@ header.top .kicker {
   margin-bottom: 12px;
 }
 
+header.top .icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
 header.top h1 {
   margin: 0;
   font-family: var(--font-head);
@@ -702,12 +707,14 @@ footer {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
   <title>{title}</title>
   <style>{css}</style>
 </head>
 <body>
   <div class="container">
     <header class="top">
+      <span class="icon">📰</span>
       <span class="kicker">Daily Brief</span>
       <h1>{title}</h1>
       <p class="subtitle">Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
