@@ -9,6 +9,7 @@ import hashlib
 import re
 import subprocess
 import sys
+import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import List, Dict, Any
@@ -168,7 +169,14 @@ def extract_article(url: str) -> Dict[str, Any]:
         if result.returncode != 0:
             return {}
         parsed = json.loads(result.stdout)
-        return parsed or {}
+        results = parsed.get("results", []) if parsed else []
+        if not results:
+            return {}
+        first = results[0]
+        return {
+            "content": first.get("raw_content", "") or first.get("content", "") or first.get("text", ""),
+            "images": first.get("images", []) or [],
+        }
     except Exception as e:
         print(f"Extract error ({url}): {e}")
         return {}
@@ -191,7 +199,7 @@ def first_substantial_paragraph(text: str, min_len: int = 80, max_len: int = 260
 
 
 def summarize_with_ollama(text: str, model: str = "llama3.2:latest", max_input: int = 1800) -> str:
-    """Summarize article text using local Ollama model."""
+    """Summarize article text using local Ollama HTTP API."""
     text = text.strip()
     if not text:
         return ""
@@ -204,31 +212,29 @@ def summarize_with_ollama(text: str, model: str = "llama3.2:latest", max_input: 
         "Responde únicamente con el resumen, sin introducción.\n\n"
         f"{text}\n\nResumen:"
     )
-    cmd = [
-        "ollama",
-        "run",
-        model,
-        "--nowordwrap",
-    ]
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False,
+        "options": {"temperature": 0.3, "num_predict": 200},
+    }
     try:
-        result = subprocess.run(
-            cmd,
-            input=prompt,
-            capture_output=True,
-            text=True,
-            timeout=120,
+        req = urllib.request.Request(
+            "http://localhost:11434/api/generate",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
         )
-        if result.returncode != 0:
-            print(f"Ollama error: {result.stderr[:200]}")
-            return ""
-        summary = result.stdout.strip()
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        summary = result.get("response", "").strip()
         summary = re.sub(r"^(Resumen:|Aquí tienes el resumen:?\s*|El resumen es:?\s*)", "", summary, flags=re.IGNORECASE).strip()
         summary = re.sub(r'"', "", summary)
         if len(summary) > 300:
             summary = summary[:300].rsplit(" ", 1)[0] + "…"
         return summary
     except Exception as e:
-        print(f"Ollama exception: {e}")
+        print(f"Ollama API exception: {e}")
         return ""
 
 
@@ -466,6 +472,17 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
     return new_items
 
 
+def pick_best_image(images: List[str]) -> str:
+    """Pick the largest-looking image, skipping logos, icons, avatars and small thumbnails."""
+    skip_patterns = ["gravatar", "logo", "icon", "favicon", "150x150", "187x62", "300x146", "300x147", "300x148", "300x134", "62x", "avatar"]
+    for img in images:
+        lower = img.lower()
+        if any(p in lower for p in skip_patterns):
+            continue
+        return img
+    return ""
+
+
 def enrich_item(item: Dict[str, Any]) -> Dict[str, Any]:
     """Extract clean content and image for a news item, and summarize with Ollama."""
     extracted = extract_article(item["url"])
@@ -473,8 +490,10 @@ def enrich_item(item: Dict[str, Any]) -> Dict[str, Any]:
         return item
     images = extracted.get("images", []) or []
     if images and not item.get("image"):
-        item["image"] = images[0]
-    raw_text = extracted.get("content", "") or extracted.get("text", "") or ""
+        best = pick_best_image(images)
+        if best:
+            item["image"] = best
+    raw_text = extracted.get("content", "") or ""
     if raw_text:
         clean = first_substantial_paragraph(raw_text)
         if clean:
