@@ -1238,6 +1238,16 @@ footer {
       var TABLE = '{SUPABASE_RATINGS_TABLE}';
       if (!SUPABASE_ANON_KEY) return;
 
+      function makeHeaders(extra) {{
+        var h = {{
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        }};
+        if (extra) {{ for (var k in extra) {{ h[k] = extra[k]; }} }}
+        return h;
+      }}
+
       function saveRating(articleId, articleUrl, title, source, category, stars) {{
         var payload = JSON.stringify({{
           article_id: articleId,
@@ -1247,23 +1257,46 @@ footer {
           category: category,
           stars: stars
         }});
-        var headers = {{
-          'apikey': SUPABASE_ANON_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
-          'Content-Type': 'application/json'
-        }};
         var deleteUrl = SUPABASE_URL + '/rest/v1/' + TABLE + '?article_id=eq.' + encodeURIComponent(articleId);
-        return fetch(deleteUrl, {{
-          method: 'DELETE',
-          headers: headers
-        }}).then(function() {{
+        return fetch(deleteUrl, {{ method: 'DELETE', headers: makeHeaders() }}).then(function() {{
           return fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {{
             method: 'POST',
-            headers: Object.assign({{}}, headers, {{'Prefer': 'return=minimal'}}),
+            headers: makeHeaders({{'Prefer': 'return=minimal'}}),
             body: payload
           }});
         }});
       }}
+
+      function loadRatings() {{
+        var url = SUPABASE_URL + '/rest/v1/' + TABLE + '?select=article_id,stars,rated_at&order=rated_at.desc';
+        return fetch(url, {{ method: 'GET', headers: {{ 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }} }})
+          .then(function(resp) {{ return resp.json(); }})
+          .then(function(rows) {{
+            var map = {{}};
+            rows.forEach(function(row) {{
+              var id = row.article_id;
+              if (id && !(id in map)) {{ map[id] = row.stars; }}
+            }});
+            return map;
+          }})
+          .catch(function(err) {{
+            console.error('Error cargando calificaciones:', err);
+            return {{}};
+          }});
+      }}
+
+      function applyInitialRatings(map) {{
+        document.querySelectorAll('.stars').forEach(function(container) {{
+          var articleId = container.getAttribute('data-article-id');
+          var value = map[articleId];
+          if (articleId && value) {{
+            container.setAttribute('data-initial-rating', value);
+            container.dispatchEvent(new CustomEvent('ratingLoaded', {{ detail: {{ value: value }} }}));
+          }}
+        }});
+      }}
+
+      loadRatings().then(applyInitialRatings);
 
       document.querySelectorAll('.stars').forEach(function(container) {{
         var articleId = container.getAttribute('data-article-id');
@@ -1284,35 +1317,29 @@ footer {
           }});
         }}
 
-        function restoreVisual() {{
-          setVisual(selectedValue);
-        }}
+        function restoreVisual() {{ setVisual(selectedValue); }}
 
         restoreVisual();
 
+        container.addEventListener('ratingLoaded', function(e) {{
+          selectedValue = e.detail.value;
+          setVisual(selectedValue);
+        }});
+
         stars.forEach(function(star) {{
-          star.addEventListener('mouseenter', function() {{
-            setVisual(parseInt(star.getAttribute('data-stars'), 10));
-          }});
-          star.addEventListener('mouseleave', function() {{
-            restoreVisual();
-          }});
+          star.addEventListener('mouseenter', function() {{ setVisual(parseInt(star.getAttribute('data-stars'), 10)); }});
+          star.addEventListener('mouseleave', restoreVisual);
           star.addEventListener('click', function() {{
             var value = parseInt(star.getAttribute('data-stars'), 10);
             selectedValue = value;
             setVisual(value);
             saveRating(articleId, articleUrl, title, source, category, value).then(function(resp) {{
               if (resp && resp.ok) {{
-                if (feedback) {{
-                  feedback.classList.add('visible');
-                  setTimeout(function() {{ feedback.classList.remove('visible'); }}, 2000);
-                }}
+                if (feedback) {{ feedback.classList.add('visible'); setTimeout(function() {{ feedback.classList.remove('visible'); }}, 2000); }}
               }} else if (resp) {{
                 console.error('Error guardando calificación:', resp.statusText);
               }}
-            }}).catch(function(err) {{
-              console.error('Error guardando calificación:', err);
-            }});
+            }}).catch(function(err) {{ console.error('Error guardando calificación:', err); }});
           }});
         }});
       }});
