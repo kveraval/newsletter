@@ -647,13 +647,13 @@ def fetch_supabase_ratings() -> Dict[str, Any]:
     if not anon_key:
         print("Supabase anon key no configurada; no se cargan calificaciones.")
         return {}
-    url = f"{SUPABASE_URL}/rest/v1/{SUPABASE_RATINGS_TABLE}?select=article_id,source,category,stars"
+    url = f"{SUPABASE_URL}/rest/v1/{SUPABASE_RATINGS_TABLE}?select=article_id,source,category,stars,rated_at&order=rated_at.desc"
     try:
         req = urllib.request.Request(
             url,
             headers={
                 "apikey": anon_key,
-                "Authorization": f"Bearer {anon_key}",
+                "Authorization": f"*** {anon_key}",
             },
             method="GET",
         )
@@ -665,15 +665,24 @@ def fetch_supabase_ratings() -> Dict[str, Any]:
 
     by_source: Dict[str, List[int]] = {}
     by_category: Dict[str, List[int]] = {}
-    by_article: Dict[str, List[int]] = {}
+    by_article: Dict[str, int] = {}
+    seen_articles: set = set()
 
     for row in rows:
         stars = row.get("stars")
         if not isinstance(stars, int) or not (1 <= stars <= 5):
             continue
-        for bucket, key in [(by_source, row.get("source")), (by_category, row.get("category")), (by_article, row.get("article_id"))]:
-            if key:
-                bucket.setdefault(key, []).append(stars)
+        source = row.get("source")
+        category = row.get("category")
+        article_id = row.get("article_id")
+        if source:
+            by_source.setdefault(source, []).append(stars)
+        if category:
+            by_category.setdefault(category, []).append(stars)
+        # Keep the most recent rating per article_id
+        if article_id and article_id not in seen_articles:
+            by_article[article_id] = stars
+            seen_articles.add(article_id)
 
     def avg(vals: List[int]) -> float:
         return sum(vals) / len(vals) if vals else 3.0
@@ -681,7 +690,7 @@ def fetch_supabase_ratings() -> Dict[str, Any]:
     return {
         "by_source": {k: avg(v) for k, v in by_source.items()},
         "by_category": {k: avg(v) for k, v in by_category.items()},
-        "by_article": {k: avg(v) for k, v in by_article.items()},
+        "by_article": by_article,
     }
 
 
@@ -706,7 +715,7 @@ def rating_adjustment(item: Dict[str, Any], ratings: Dict[str, Any]) -> float:
     return sum(adjustments) if adjustments else 0.0
 
 
-def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "El Brief de Kay", daily_quote: str = "") -> str:
+def build_html(news_by_date: Dict[str, List[Dict[str, Any]]], title: str = "El Brief de Kay", daily_quote: str = "", ratings: Dict[str, Any] = None) -> str:
     css = """
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
 
@@ -1096,8 +1105,13 @@ footer {
         article_id = item.get("id", "")
         title_escaped = item['title'].replace('"', '\\"')
         category_escaped = item.get('category', 'General').replace('"', '\\"')
+        initial_rating = 0
+        if ratings and article_id:
+            initial_rating = int(round(ratings.get("by_article", {}).get(article_id, 0)))
+            if initial_rating < 1:
+                initial_rating = 0
         stars_html = "".join(
-            f'<span class="star" data-stars="{s}" title="{s} estrella{"s" if s != 1 else ""}">★</span>'
+            f'<span class="star{" rated" if s <= initial_rating else ""}" data-stars="{s}" title="{s} estrella{"s" if s != 1 else ""}">★</span>'
             for s in range(1, 6)
         )
         return f"""
@@ -1113,7 +1127,7 @@ footer {
           <p class="summary">{item.get('summary', '')}</p>
           <div class="rating">
             <span>Puntuar:</span>
-            <span class="stars" data-article-id="{article_id}" data-title="{title_escaped}" data-url="{item['url']}" data-source="{item['source']}" data-category="{category_escaped}">
+            <span class="stars" data-article-id="{article_id}" data-title="{title_escaped}" data-url="{item['url']}" data-source="{item['source']}" data-category="{category_escaped}" data-initial-rating="{initial_rating}">
               {stars_html}
             </span>
             <span class="feedback">✓ Guardado</span>
@@ -1259,7 +1273,8 @@ footer {
         var category = container.getAttribute('data-category');
         var stars = container.querySelectorAll('.star');
         var feedback = container.parentElement.querySelector('.feedback');
-        var selectedValue = 0;
+        var selectedValue = parseInt(container.getAttribute('data-initial-rating') || '0', 10);
+        if (isNaN(selectedValue)) selectedValue = 0;
 
         function setVisual(value) {{
           stars.forEach(function(s) {{
@@ -1272,6 +1287,8 @@ footer {
         function restoreVisual() {{
           setVisual(selectedValue);
         }}
+
+        restoreVisual();
 
         stars.forEach(function(star) {{
           star.addEventListener('mouseenter', function() {{
@@ -1340,6 +1357,7 @@ def main(regenerate_only: bool = False):
             seen.add(item["id"])
     else:
         print("Modo regeneración: solo reconstruye HTML desde historial.")
+        ratings = fetch_supabase_ratings()
 
     unique_history: Dict[str, Dict[str, Any]] = {}
     for item in news_history:
@@ -1352,7 +1370,9 @@ def main(regenerate_only: bool = False):
     for item in news_history:
         by_date.setdefault(item["date"], []).append(item)
 
-    HTML_FILE.write_text(build_html(by_date, daily_quote=daily_quote), encoding="utf-8")
+    if not ratings:
+        ratings = {}
+    HTML_FILE.write_text(build_html(by_date, daily_quote=daily_quote, ratings=ratings), encoding="utf-8")
     save_json(SEEN_FILE, sorted(seen))
     save_json(NEWS_FILE, news_history)
     print(f"Total histórico único: {len(news_history)}")
