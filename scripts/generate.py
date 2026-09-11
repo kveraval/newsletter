@@ -704,8 +704,12 @@ header.top .meta-line {
 }
 
 .date-section {
-  margin-bottom: 64px;
+  margin-bottom: 24px;
   padding-top: 8px;
+}
+
+.date-section:last-of-type {
+  margin-bottom: 64px;
 }
 
 .date-header {
@@ -713,12 +717,19 @@ header.top .meta-line {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin: 0 0 28px;
+  margin: 0 0 0;
   padding: 14px 18px;
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   color: #ffffff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.date-header:hover {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
 }
 
 .date-header h2 {
@@ -743,6 +754,55 @@ header.top .meta-line {
   background: var(--border);
   margin: 0 0 32px;
   border-radius: 1px;
+  transition: opacity 0.25s ease, margin 0.25s ease;
+}
+
+.date-divider.hidden {
+  opacity: 0;
+  margin: 0;
+  height: 0;
+}
+
+.date-content {
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  max-height: 20000px;
+  opacity: 1;
+}
+
+.date-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.date-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.date-toggle .chevron {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.date-header[aria-expanded="false"] .date-toggle .chevron {
+  transform: rotate(-90deg);
+}
+
+.date-header[aria-expanded="true"] .date-toggle .chevron {
+  transform: rotate(0deg);
 }
 
 .category {
@@ -906,7 +966,8 @@ footer {
         """
 
     sections = []
-    for date in sorted(news_by_date.keys(), reverse=True):
+    sorted_dates = sorted(news_by_date.keys(), reverse=True)
+    for idx, date in enumerate(sorted_dates):
         items = news_by_date[date]
         grouped: Dict[str, List[Dict[str, Any]]] = {}
         for item in items:
@@ -919,14 +980,21 @@ footer {
               {"".join(card_html(i, date) for i in grouped[category])}
             </div>
             """
+        expanded = "true" if idx == 0 else "false"
+        collapsed_class = "" if idx == 0 else "collapsed"
+        divider_class = "" if idx == 0 else "hidden"
+        toggle_label = "Ocultar" if idx == 0 else "Mostrar"
         sections.append(f"""
-        <section class="date-section">
-          <div class="date-header">
+        <section class="date-section" data-date="{date}">
+          <div class="date-header" aria-expanded="{expanded}" tabindex="0" role="button">
             <h2>{format_date_header(date)}</h2>
             <span class="count">{len(items)} noticia{'s' if len(items) != 1 else ''}</span>
+            <span class="date-toggle" aria-hidden="true"><span class="chevron">▾</span> {toggle_label}</span>
           </div>
-          <div class="date-divider"></div>
-          {categories_html}
+          <div class="date-divider {divider_class}"></div>
+          <div class="date-content {collapsed_class}">
+            {categories_html}
+          </div>
         </section>
         """)
 
@@ -961,6 +1029,37 @@ footer {
       Generado automáticamente · {datetime.now(timezone.utc).strftime('%Y')}
     </footer>
   </div>
+  <script>
+    (function() {{
+      document.querySelectorAll('.date-header').forEach(function(header) {{
+        function toggle() {{
+          var expanded = header.getAttribute('aria-expanded') === 'true';
+          var section = header.closest('.date-section');
+          var divider = section.querySelector('.date-divider');
+          var content = section.querySelector('.date-content');
+          var toggleLabel = header.querySelector('.date-toggle');
+          if (expanded) {{
+            header.setAttribute('aria-expanded', 'false');
+            if (divider) divider.classList.add('hidden');
+            content.classList.add('collapsed');
+            if (toggleLabel) toggleLabel.innerHTML = '<span class="chevron">▾</span> Mostrar';
+          }} else {{
+            header.setAttribute('aria-expanded', 'true');
+            if (divider) divider.classList.remove('hidden');
+            content.classList.remove('collapsed');
+            if (toggleLabel) toggleLabel.innerHTML = '<span class="chevron">▾</span> Ocultar';
+          }}
+        }}
+        header.addEventListener('click', toggle);
+        header.addEventListener('keydown', function(e) {{
+          if (e.key === 'Enter' || e.key === ' ') {{
+            e.preventDefault();
+            toggle();
+          }}
+        }});
+      }});
+    }})();
+  </script>
 </body>
 </html>
 """
