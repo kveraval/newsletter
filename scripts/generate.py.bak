@@ -56,23 +56,32 @@ DAILY_QUOTES = [
     '"Construye algo que importe."',
 ]
 
-# Tech News Digest Integration
-TECH_NEWS_ENABLED = True
-TECH_NEWS_DIR = Path("/root/.openclaw/workspace/skills/tech-news-digest")
-TECH_NEWS_CACHE_HOURS = 6  # Reuse pipeline output if fresh enough
-
 TOPICS = [
     {
         "category": "Innovación Bancaria y Productos Chile",
         "queries": [
             "banca digital Chile noticias hoy",
             "innovación bancaria Chile noticias hoy",
+            "nuevos productos bancarios Chile noticias",
             "Banco de Chile productos digitales noticias",
             "BancoEstado Chile productos digitales noticias",
             "Banco Itaú Chile innovación noticias",
             "Santander Chile banca digital noticias",
             "BCI Chile banca digital noticias",
+            "Scotiabank Chile productos digitales noticias",
+            "Tenpo Chile fintech noticias",
+            "Bice Chile banca digital noticias",
+            "Fintoc Chile open banking noticias",
             "fintech Chile noticias hoy",
+            "Banco de Chile nuevas funcionalidades app noticias",
+            "BancoEstado nueva funcionalidad digital noticias",
+            "Santander Chile nuevas funcionalidades banca digital",
+            "BCI Chile nuevas funcionalidades banca digital",
+            "Itaú Chile nuevas funcionalidades banca digital",
+            "Tenpo nuevos productos financieros noticias",
+            "Bice Chile nuevos productos digitales noticias",
+            "cuenta digital Chile banco noticias",
+            "tarjeta digital Chile banco noticias",
         ],
     },
     {
@@ -81,9 +90,19 @@ TOPICS = [
             "open banking Chile noticias hoy",
             "banca abierta Chile CMF noticias",
             "open finance Chile noticias",
+            "open banking Latam noticias",
+            "open finance Brasil noticias hoy",
+            "open banking México noticias hoy",
             "APIs abiertas banca Chile noticias",
+            "regulación open banking Chile CMF noticias",
+            "interoperabilidad financiera Chile noticias",
+            "datos abiertos financieros Chile noticias",
             "ley fintech Chile noticias hoy",
+            "proyecto ley fintech Chile Ministerio Hacienda noticias",
             "regulación fintech Chile noticias",
+            "CMF fintech Chile regulación noticias",
+            "sandbox regulatorio Chile fintech noticias",
+            "billetera digital Chile noticias",
         ],
     },
     {
@@ -92,11 +111,24 @@ TOPICS = [
             "IA inteligencia artificial banca Chile noticias",
             "bancos chilenos IA inteligencia artificial noticias",
             "agentes IA banca Chile noticias",
+            "agentes de inteligencia artificial banca Chile",
             "Banco de Chile IA inteligencia artificial",
             "BancoEstado IA inteligencia artificial",
             "Itaú Chile IA inteligencia artificial",
             "BCI Chile IA inteligencia artificial",
             "Santander Chile IA noticias",
+            "Banco de Chile chatbot IA noticias",
+            "BancoEstado chatbot IA noticias",
+            "Itaú Chile chatbot IA noticias",
+            "BCI Chile chatbot IA noticias",
+            "Santander Chile chatbot IA noticias",
+            "modelos de lenguaje banca Chile noticias",
+            "LLM banca Chile noticias",
+            "automatización IA banca Chile noticias",
+            "fraude IA banca Chile noticias",
+            "AI banking Latin America news",
+            "AI agents banking Latin America news",
+            "generative AI banking Latin America news",
         ],
     },
     {
@@ -105,20 +137,23 @@ TOPICS = [
             "fintech innovation news today",
             "digital banking technology news",
             "AI agents fintech news today",
+            "new AI tools fintech banking news",
+            "generative AI financial services news",
+            "agentic AI finance news today",
             "open banking global fintech news",
+            "neobank new features news today",
             "embedded finance fintech news",
+            "BNPL fintech news today",
             "digital payments innovation news today",
+            "blockchain banking fintech news",
+            "regtech fintech news today",
+            "nuevas herramientas IA fintech noticias",
+            "nuevas herramientas inteligencia artificial finanzas noticias",
+            "innovación agentes IA fintech noticias",
+            "nuevos productos IA banca noticias",
         ],
     },
 ]
-
-# Tech News topic metadata
-TECH_TOPICS = {
-    "frontier-tech": {"label": "Tech Global", "emoji": "🚀"},
-    "llm": {"label": "IA y Modelos", "emoji": "🧠"},
-    "ai-agent": {"label": "Agentes IA", "emoji": "🤖"},
-    "crypto": {"label": "Crypto", "emoji": "₿"},
-}
 
 BLOCKED_DOMAINS = {
     "facebook.com", "fb.watch", "instagram.com", "twitter.com", "x.com",
@@ -169,16 +204,6 @@ def normalize_title(title: str) -> str:
 
 
 def run_tavily(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
-    """Busca noticias usando Tavily; fallback a Ollama si Tavily está agotado."""
-    results = _run_tavily_search(query, max_results)
-    if results:
-        return results
-    print(f"⚠️ Tavily sin quota, usando Ollama para: {query[:50]}...")
-    return run_ollama_search(query, max_results)
-
-
-def _run_tavily_search(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
-    """Intenta Tavily directamente (sin fallback)."""
     cmd = [
         "/root/.tavily-env/bin/tvly",
         "search",
@@ -194,49 +219,17 @@ def _run_tavily_search(query: str, max_results: int = 5) -> List[Dict[str, Any]]
     try:
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=90)
         if result.returncode != 0:
+            print(f"Tavily error ({query}): {result.stderr[:200]}")
             return []
         parsed = json.loads(result.stdout)
         return parsed.get("results", [])
-    except Exception:
-        return []
-
-
-def run_ollama_search(query: str, max_results: int = 5) -> List[Dict[str, Any]]:
-    """Busca noticias usando Ollama Web Search."""
-    cmd = ["ollama-search", query, str(max_results)]
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            print(f"Ollama search error: {result.stderr[:200]}")
-            return []
-        out = result.stdout
-        parsed = []
-        pattern = r'=+\nTítulo: (.+?)\nURL: (.+?)\n-+\n(.+?)(?=\n=+|$)'
-        matches = re.findall(pattern, out, re.DOTALL)
-        for title, url, content in matches:
-            parsed.append({
-                "title": title.strip(),
-                "url": url.strip(),
-                "content": content.strip()[:500],
-                "score": 0.5,
-            })
-        return parsed
     except Exception as e:
-        print(f"Exception querying Ollama ({query}): {e}")
+        print(f"Exception querying Tavily ({query}): {e}")
         return []
 
 
 def extract_article(url: str) -> Dict[str, Any]:
-    """Extrae contenido con Tavily; fallback a ollama-fetch."""
-    extracted = _extract_with_tavily(url)
-    if extracted and extracted.get("content"):
-        return extracted
-    print(f"⚠️ Tavily extract falló, usando ollama-fetch para: {url[:50]}...")
-    return _extract_with_ollama(url)
-
-
-def _extract_with_tavily(url: str) -> Dict[str, Any]:
-    """Intenta extracción con Tavily."""
+    """Extract clean article content and images with Tavily extract."""
     cmd = [
         "/root/.tavily-env/bin/tvly",
         "extract",
@@ -257,24 +250,8 @@ def _extract_with_tavily(url: str) -> Dict[str, Any]:
             "content": first.get("raw_content", "") or first.get("content", "") or first.get("text", ""),
             "images": first.get("images", []) or [],
         }
-    except Exception:
-        return {}
-
-
-def _extract_with_ollama(url: str) -> Dict[str, Any]:
-    """Extrae contenido con ollama-fetch."""
-    cmd = ["ollama-fetch", url]
-    try:
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
-        if result.returncode != 0:
-            return {}
-        content = result.stdout
-        return {
-            "content": content,
-            "images": [],
-        }
     except Exception as e:
-        print(f"Ollama extract error ({url}): {e}")
+        print(f"Extract error ({url}): {e}")
         return {}
 
 
@@ -1468,23 +1445,6 @@ def main(regenerate_only: bool = False):
             print(f"Calificaciones cargadas: {len(ratings.get('by_article', {}))} artículos, {len(ratings.get('by_source', {}))} fuentes, {len(ratings.get('by_category', {}))} categorías")
         new_items = collect_news(ratings=ratings)
         new_items = select_items_chile_priority(new_items, total_limit=10, max_global=3)
-
-        # Add Tech News section
-        print("Generando sección Tech News...")
-        try:
-            import importlib.util
-            tech_script = Path(__file__).resolve().parent / "generate_tech_news.py"
-            spec = importlib.util.spec_from_file_location("generate_tech_news", tech_script)
-            tech_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(tech_module)
-            tech_articles = tech_module.get_tech_news()
-            if tech_articles:
-                print(f"Agregando {len(tech_articles)} artículos de Tech News")
-                new_items.extend(tech_articles)
-            else:
-                print("No se encontraron artículos de Tech News")
-        except Exception as e:
-            print(f"Error generando Tech News: {e}")
 
         per_category_limit = 6
         category_counts: Dict[str, int] = {}
