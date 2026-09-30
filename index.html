@@ -1,116 +1,1118 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>El Brief de Kay - 2026-09-29</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📰</text></svg>">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    :root { --bg: #ffffff; --surface: #f8fafc; --text: #1f2937; --text-muted: #475569; --text-light: #64748b; --accent: #2563eb; --accent-soft: #eff6ff; --border: #e2e8f0; --radius: 12px; --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06); }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: 'Inter', sans-serif; background: var(--surface); color: var(--text); line-height: 1.6; }
-    .container { max-width: 720px; margin: 0 auto; padding: 48px 24px 64px; }
-    header.top { text-align: center; padding-bottom: 32px; border-bottom: 1px solid var(--border); margin-bottom: 40px; }
-    header.top h1 { margin: 0; font-size: 2.4rem; font-weight: 700; letter-spacing: -0.02em; }
-    header.top .subtitle { margin: 12px 0 0; color: var(--text-muted); font-size: 1rem; }
-    header.top .quote { margin: 20px 0 0; font-style: italic; color: var(--text-muted); }
-    .category { margin-bottom: 36px; }
-    .category h3 { margin: 0 0 18px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); padding: 6px 10px; background: var(--accent-soft); display: inline-block; border-radius: 6px; }
-    .card { background: var(--bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 22px 24px; margin-bottom: 16px; border: 1px solid var(--border); transition: transform 0.15s ease; }
-    .card:hover { transform: translateY(-2px); }
-    .card a.title { display: block; text-decoration: none; color: var(--text); font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; line-height: 1.35; }
-    .card a.title:hover { color: var(--accent); }
-    .meta { display: flex; gap: 8px; align-items: center; font-size: 0.78rem; color: var(--text-light); margin-bottom: 10px; }
-    .meta .source { font-weight: 600; color: var(--text-muted); }
-    .summary { font-size: 0.95rem; color: var(--text); margin: 0; }
-    footer { text-align: center; padding: 48px 0 24px; color: var(--text-light); font-size: 0.8rem; border-top: 1px solid var(--border); }
-    @media (max-width: 560px) { .container { padding: 32px 18px 48px; } header.top h1 { font-size: 2rem; } .card { padding: 18px 20px; } }
-  </style>
+  <title>El Brief de Kay</title>
+  <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+
+:root {
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --card: #ffffff;
+  --text: #1f2937;
+  --text-muted: #475569;
+  --text-light: #64748b;
+  --accent: #2563eb;
+  --accent-soft: #eff6ff;
+  --accent-dark: #1d4ed8;
+  --border: #e2e8f0;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.06);
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-head: 'Playfair Display', Georgia, "Times New Roman", serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--surface);
+  color: var(--text);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+header.top {
+  text-align: center;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 40px;
+}
+
+header.top .icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+header.top .kicker {
+  display: inline-block;
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 12px;
+}
+
+header.top h1 {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 2.6rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+header.top .subtitle {
+  margin: 12px 0 0;
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+header.top .quote {
+  margin: 20px 0 0;
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+header.top .meta-line {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.date-section {
+  margin-bottom: 24px;
+  padding-top: 8px;
+}
+
+.date-section:last-of-type {
+  margin-bottom: 64px;
+}
+
+.date-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 0;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #ffffff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.date-header:hover {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+.date-header h2 {
+  margin: 0;
+  font-family: var(--font-head);
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.date-header .count {
+  color: #cbd5e1;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: rgba(255,255,255,0.12);
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.date-divider {
+  height: 2px;
+  background: var(--border);
+  margin: 0 0 32px;
+  border-radius: 1px;
+  transition: opacity 0.25s ease, margin 0.25s ease;
+}
+
+.date-divider.hidden {
+  opacity: 0;
+  margin: 0;
+  height: 0;
+}
+
+.date-content {
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.25s ease;
+  max-height: 20000px;
+  opacity: 1;
+}
+
+.date-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+}
+
+.date-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.15);
+  color: #ffffff;
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.date-toggle .chevron {
+  display: inline-block;
+  transition: transform 0.25s ease;
+}
+
+.date-header[aria-expanded="false"] .date-toggle .chevron {
+  transform: rotate(-90deg);
+}
+
+.date-header[aria-expanded="true"] .date-toggle .chevron {
+  transform: rotate(0deg);
+}
+
+.category {
+  margin-bottom: 36px;
+}
+
+.category h3 {
+  margin: 0 0 18px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+  padding: 6px 10px;
+  background: var(--accent-soft);
+  display: inline-block;
+  border-radius: 6px;
+}
+
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
+  margin-bottom: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid var(--border);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 14px;
+  background: var(--surface);
+}
+
+.card a.title {
+  display: block;
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.35;
+}
+
+.card a.title:hover {
+  color: var(--accent);
+}
+
+.meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--text-light);
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.meta .source {
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.meta .dot {
+  width: 3px;
+  height: 3px;
+  background: var(--text-light);
+  border-radius: 50%;
+}
+
+.meta .badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+}
+
+.meta .badge.today {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.meta .badge.yesterday {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.rating {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: var(--text-light);
+}
+
+.rating .stars {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.rating .star {
+  cursor: pointer;
+  font-size: 1.15rem;
+  color: var(--text-light);
+  transition: color 0.15s ease, transform 0.1s ease;
+  line-height: 1;
+}
+
+.rating .star:hover,
+.rating .star.active {
+  color: #f59e0b;
+  transform: scale(1.1);
+}
+
+.rating .star.rated {
+  color: #f59e0b;
+}
+
+.rating .feedback {
+  font-size: 0.72rem;
+  margin-left: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.rating .feedback.visible {
+  opacity: 1;
+}
+
+.summary {
+  font-size: 0.98rem;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.6;
+}
+
+footer {
+  text-align: center;
+  padding: 48px 0 24px;
+  color: var(--text-light);
+  font-size: 0.8rem;
+  border-top: 1px solid var(--border);
+}
+
+.empty {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 48px 0;
+}
+
+@media (max-width: 560px) {
+  .container { padding: 32px 18px 48px; }
+  header.top h1 { font-size: 2rem; }
+  .date-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .date-header .count { align-self: flex-end; }
+  .card { padding: 18px 20px; }
+  .card a.title { font-size: 1.1rem; }
+  .card img { height: 140px; }
+  .meta { gap: 6px; }
+}</style>
 </head>
 <body>
   <div class="container">
     <header class="top">
-      <h1>📰 El Brief de Kay</h1>
+      <span class="icon">📰</span>
+      <span class="kicker">Daily Brief</span>
+      <h1>El Brief de Kay</h1>
       <p class="subtitle">Open banking, IA, innovación bancaria y productos financieros en Chile y Latam.</p>
-      <p class="quote">"La innovación distingue al líder del seguidor." — Steve Jobs</p>
+      <p class="quote">"La mejor manera de predecir el futuro es crearlo." — Peter Drucker</p>
+      <div class="meta-line">
+        <span>Actualizado: 2026-09-30 15:25 UTC</span>
+      </div>
     </header>
     <main>
       
-    <div class="category">
-      <h3>Fintech y Regulación</h3>
-      
-      <article class="card">
-        <a class="title" href="https://www.theclinic.cl/2026/01/22/los-detalles-del-salto-que-dio-tenpo-para-lograr-convertirse-en-el-primer-banco-totalmente-digital-de-chile/" target="_blank" rel="noopener">Los detalles del salto que dio Tenpo para lograr convertirse en el primer banco totalmente digital de Chile</a>
-        <div class="meta">
-          <span class="source">theclinic.cl</span>
-          <span class="dot"></span>
-          <span>2026-09-29</span>
-        </div>
-        <p class="summary">============================================================ Título: Los detalles del salto que dio Tenpo para lograr convertirse en el primer banco totalmente digital de Chile URL:…</p>
-      </article>
-      
-    </div>
-    
-    <div class="category">
-      <h3>Inteligencia Artificial en Banca Chile</h3>
-      
-      <article class="card">
-        <a class="title" href="https://www.latercera.com/pulso/noticia/cmf-otorga-autorizacion-de-funcionamiento-a-tenpo-bank-chile/" target="_blank" rel="noopener">CMF autoriza funcionamiento de Tenpo Bank Chile y se convierte en el primer neobanco del país - La Tercera</a>
-        <div class="meta">
-          <span class="source">latercera.com</span>
-          <span class="dot"></span>
-          <span>2026-09-29</span>
-        </div>
-        <p class="summary">============================================================ Título: CMF autoriza funcionamiento de Tenpo Bank Chile y se convierte en el primer neobanco del país - La Tercera URL:…</p>
-      </article>
-      
-      <article class="card">
-        <a class="title" href="https://www.scotiabankchile.cl/Personas/sala-de-prensa-2026/scotiaidea-2025" target="_blank" rel="noopener">ScotiaIDEA 2025</a>
-        <div class="meta">
-          <span class="source">scotiabankchile.cl</span>
-          <span class="dot"></span>
-          <span>2026-09-29</span>
-        </div>
-        <p class="summary">ScotiaIDEA 2025 # Las nuevas tecnologías que permiten reducir riesgos y 'ahorrar tiempo' protagonizaron ScotiaIDEA 2025 El 17 de diciembre, Scotiabank realizó el lanzamiento de ScotiaIDEA , iniciativa que busca potenciar la innovación dentro del banco, transformando ideas en…</p>
-      </article>
-      
-      <article class="card">
-        <a class="title" href="https://anda.cl/mago-mercado-pago-chile-asistente-inteligencia-artificial/" target="_blank" rel="noopener">Mago de Mercado Pago en Chile: asistente con IA</a>
-        <div class="meta">
-          <span class="source">anda.cl</span>
-          <span class="dot"></span>
-          <span>2026-09-29</span>
-        </div>
-        <p class="summary">============================================================ Título: Mago de Mercado Pago en Chile: asistente con IA URL: https://anda.cl/mago-mercado-pago-chile-asistente-inteligencia-artificial/ ============================================================ Mago de Mercado Pago…</p>
-      </article>
-      
-      <article class="card">
-        <a class="title" href="https://cmfchile.cl/portal/principal/613/w3-propertyvalue-43589.html" target="_blank" rel="noopener">Información de Fiscalizados y otras instituciones registradas</a>
-        <div class="meta">
-          <span class="source">cmfchile.cl</span>
-          <span class="dot"></span>
-          <span>2026-09-29</span>
-        </div>
-        <p class="summary">Fintec: tecnología financiera - CMF Chile - Comisión para el Mercado Financiero Chile (portal) Contenido principal **Buscar * Podcast "Cuidando Mis Finanzas"InstagramFacebookYoutubeLinkedinWhatsAppXIcono English overviewEnglish overview * La CMF Presentación Qué es la CMFConsejo…</p>
-      </article>
-      
-      <article class="card">
-        <a class="title" href="https://idocs.alipay.com/intl-website/intl-website/en/ant-international-launches-full-stack-ai-native-solutions-for-payment-account-fx-treasury-and-growth-operations-for-global-businesses" target="_blank" rel="noopener">Ant International Launches Industry's First Full-Stack AI-Native Solutions for Payment, Account, FX, Treasury and Growth Operations for Global Businesses | en</a>
-        <div class="meta">
-          <span class="source">idocs.alipay.com</span>
-          <span class="dot"></span>
-          <span>2026-09-29</span>
-        </div>
-        <p class="summary">============================================================ Título: Ant International Launches Industry's First Full-Stack AI-Native Solutions for Payment, Account, FX, Treasury and Growth Operations for Global Businesses | en URL:…</p>
-      </article>
-      
-    </div>
-    
+        <section class="date-section" data-date="2026-09-30">
+          <div class="date-header" aria-expanded="true" tabindex="0" role="button">
+            <h2>miércoles 30 de septiembre de 2026</h2>
+            <span class="count">21 noticias</span>
+            <span class="date-toggle" aria-hidden="true"><span class="chevron">▾</span> Ocultar</span>
+          </div>
+          <div class="date-divider "></div>
+          <div class="date-content ">
+            
+            <div class="category">
+              <h3>Innovación Bancaria y Productos Chile</h3>
+              
+        <article class="card" data-article-id="a526010ad8f2e462">
+          
+          <a class="title" href="https://www.biobiochile.cl/noticias/economia/negocios-y-empresas/2026/09/28/clientes-reportan-problemas-con-santander-pass-y-que-no-pueden-realizar-sus-tramites-bancarios.shtml" target="_blank" rel="noopener">Clientes reportan problemas con Santander Pass y que no pueden realizar sus trámites bancarios | Economía | BioBioChile</a>
+          <div class="meta">
+            <span class="source">biobiochile.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Clientes reportan problemas con Santander Pass y que no pueden realizar sus trámites bancarios | Economía | BioBioChile URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="a526010ad8f2e462" data-title="Clientes reportan problemas con Santander Pass y que no pueden realizar sus trámites bancarios | Economía | BioBioChile" data-url="https://www.biobiochile.cl/noticias/economia/negocios-y-empresas/2026/09/28/clientes-reportan-problemas-con-santander-pass-y-que-no-pueden-realizar-sus-tramites-bancarios.shtml" data-source="biobiochile.cl" data-category="Innovación Bancaria y Productos Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="9f0a60bf766b1f98">
+          
+          <a class="title" href="https://www.df.cl/opinion/columnistas/banca-chilena-ante-la-niif-18-un-cambio-con-definiciones-pendientes" target="_blank" rel="noopener">Banca chilena ante la NIIF 18: un cambio con definiciones pendientes | Diario Financiero</a>
+          <div class="meta">
+            <span class="source">df.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Banca chilena ante la NIIF 18: un cambio con definiciones pendientes | Diario Financiero URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="9f0a60bf766b1f98" data-title="Banca chilena ante la NIIF 18: un cambio con definiciones pendientes | Diario Financiero" data-url="https://www.df.cl/opinion/columnistas/banca-chilena-ante-la-niif-18-un-cambio-con-definiciones-pendientes" data-source="df.cl" data-category="Innovación Bancaria y Productos Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="d815b49ade61bdea">
+          
+          <a class="title" href="https://www.paiscircular.cl/industria/banco-de-chile-lanza-nueva-cuenta-corriente-digital-100-online-sin-limites-de-abono-y-que-permite-acceder-a-su-amplio-ecosistema-digital/" target="_blank" rel="noopener">Banco de Chile lanza nueva Cuenta Corriente Digital, 100% online, sin límites de abono y que permite acceder a su amplio ecosistema digital - País Circular</a>
+          <div class="meta">
+            <span class="source">paiscircular.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Banco de Chile lanza nueva Cuenta Corriente Digital, 100% online, sin límites de abono y que permite acceder a su amplio ecosistema digital - País Circular URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="d815b49ade61bdea" data-title="Banco de Chile lanza nueva Cuenta Corriente Digital, 100% online, sin límites de abono y que permite acceder a su amplio ecosistema digital - País Circular" data-url="https://www.paiscircular.cl/industria/banco-de-chile-lanza-nueva-cuenta-corriente-digital-100-online-sin-limites-de-abono-y-que-permite-acceder-a-su-amplio-ecosistema-digital/" data-source="paiscircular.cl" data-category="Innovación Bancaria y Productos Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="cec210c1751abac1">
+          
+          <a class="title" href="https://www.linkedin.com/feed/update/urn:li:activity:7155167236851134464" target="_blank" rel="noopener">Hoy damos la bienvenida a nuestra nueva Cuenta FAN Ahorro, un producto 100% digital del Banco de Chile que te permite ganar intereses mensualmente.</a>
+          <div class="meta">
+            <span class="source">linkedin.com</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Nueva Cuenta FAN Ahorro, contrátala y obtén ganancias mes a mes | Rodrigo Devia G. | 12 comments URL: https://www.linkedin.com/feed/update/urn:li:activity:7155167236851134464…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="cec210c1751abac1" data-title="Hoy damos la bienvenida a nuestra nueva Cuenta FAN Ahorro, un producto 100% digital del Banco de Chile que te permite ganar intereses mensualmente." data-url="https://www.linkedin.com/feed/update/urn:li:activity:7155167236851134464" data-source="linkedin.com" data-category="Innovación Bancaria y Productos Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="d8560d561549bacf">
+          
+          <a class="title" href="https://www.latercera.com/pulso/noticia/banco-de-chile-recibe-autorizacion-definitiva-del-regulador-para-lanzar-su-propia-red-de-adquirencia/" target="_blank" rel="noopener">Banco de Chile recibe autorización definitiva del regulador para lanzar su propia red de adquirencia - La Tercera</a>
+          <div class="meta">
+            <span class="source">latercera.com</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Banco de Chile recibe autorización definitiva del regulador para lanzar su propia red de adquirencia - La Tercera URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="d8560d561549bacf" data-title="Banco de Chile recibe autorización definitiva del regulador para lanzar su propia red de adquirencia - La Tercera" data-url="https://www.latercera.com/pulso/noticia/banco-de-chile-recibe-autorizacion-definitiva-del-regulador-para-lanzar-su-propia-red-de-adquirencia/" data-source="latercera.com" data-category="Innovación Bancaria y Productos Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="335fa93a3ed41b3d">
+          
+          <a class="title" href="https://g5noticias.cl/2022/12/27/mesada-digital-compras-online-y-mucho-mas-banco-de-chile-lanza-nueva-cuenta-vista-fan-clan-para-jovenes-entre-14-y-17-anos/" target="_blank" rel="noopener">Mesada digital, compras online y mucho más: Banco de Chile lanza nueva cuenta vista FAN Clan para jóvenes entre 14 y 17 años – G5noticias</a>
+          <div class="meta">
+            <span class="source">g5noticias.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Mesada digital, compras online y mucho más: Banco de Chile lanza nueva cuenta vista FAN Clan para jóvenes entre 14 y 17 años – G5noticias URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="335fa93a3ed41b3d" data-title="Mesada digital, compras online y mucho más: Banco de Chile lanza nueva cuenta vista FAN Clan para jóvenes entre 14 y 17 años – G5noticias" data-url="https://g5noticias.cl/2022/12/27/mesada-digital-compras-online-y-mucho-mas-banco-de-chile-lanza-nueva-cuenta-vista-fan-clan-para-jovenes-entre-14-y-17-anos/" data-source="g5noticias.cl" data-category="Innovación Bancaria y Productos Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+            <div class="category">
+              <h3>Tech News — Agentes IA</h3>
+              
+        <article class="card" data-article-id="tech-01d37d03">
+          
+          <a class="title" href="https://github.com/CherryHQ/cherry-studio" target="_blank" rel="noopener">🤖 CherryHQ/cherry-studio: AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-01d37d03" data-title="🤖 CherryHQ/cherry-studio: AI productivity studio with smart chat, autonomous agents, and 300+ assistants. Unified access to frontier LLMs" data-url="https://github.com/CherryHQ/cherry-studio" data-source="github-trending" data-category="Tech News — Agentes IA" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-0492d7f2">
+          
+          <a class="title" href="https://github.com/lsdefine/GenericAgent" target="_blank" rel="noopener">🤖 lsdefine/GenericAgent: Self-evolving agent: grows skill tree from 3.3K-line seed, achieving full system control with 6x less token consumption</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">Self-evolving agent: grows skill tree from 3.3K-line seed, achieving full system control with 6x less token consumption</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-0492d7f2" data-title="🤖 lsdefine/GenericAgent: Self-evolving agent: grows skill tree from 3.3K-line seed, achieving full system control with 6x less token consumption" data-url="https://github.com/lsdefine/GenericAgent" data-source="github-trending" data-category="Tech News — Agentes IA" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-020d999d">
+          
+          <a class="title" href="https://github.com/fuxicodex/Fuxi" target="_blank" rel="noopener">🤖 fuxicodex/Fuxi: FuXi is a fast, self-contained AI coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routing across LLM providers.</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">FuXi is a fast, self-contained AI coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routing across LLM providers.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-020d999d" data-title="🤖 fuxicodex/Fuxi: FuXi is a fast, self-contained AI coding agent that lives in your terminal — edit code, run commands, and drive tools, with cost-aware routing across LLM providers." data-url="https://github.com/fuxicodex/Fuxi" data-source="github-trending" data-category="Tech News — Agentes IA" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-0042a8c7">
+          
+          <a class="title" href="https://github.com/EvoMap/evolver" target="_blank" rel="noopener">🤖 EvoMap/evolver: The GEP-powered self-evolving engine for AI agents. Auditable evolution with Genes, Capsules, and Events. | evomap.ai</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">The GEP-powered self-evolving engine for AI agents. Auditable evolution with Genes, Capsules, and Events. | evomap.ai</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-0042a8c7" data-title="🤖 EvoMap/evolver: The GEP-powered self-evolving engine for AI agents. Auditable evolution with Genes, Capsules, and Events. | evomap.ai" data-url="https://github.com/EvoMap/evolver" data-source="github-trending" data-category="Tech News — Agentes IA" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+            <div class="category">
+              <h3>Tech News — Crypto</h3>
+              
+        <article class="card" data-article-id="tech-03d2e8f4">
+          
+          <a class="title" href="https://www.coindesk.com/policy/2026/09/30/u-s-cftc-seeks-event-contract-definitions-that-may-defy-states-gambling-claims" target="_blank" rel="noopener">₿ U.S. CFTC  seeks event contract definitions that may defy states' gambling claims</a>
+          <div class="meta">
+            <span class="source">CoinDesk</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">Noticia tech destacada en Crypto</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-03d2e8f4" data-title="₿ U.S. CFTC  seeks event contract definitions that may defy states' gambling claims" data-url="https://www.coindesk.com/policy/2026/09/30/u-s-cftc-seeks-event-contract-definitions-that-may-defy-states-gambling-claims" data-source="CoinDesk" data-category="Tech News — Crypto" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-01691a0f">
+          
+          <a class="title" href="https://www.coindesk.com/coindesk-indices/2026/09/30/crypto-long-and-short-what-will-the-ai-agents-run-on" target="_blank" rel="noopener">₿ Crypto Long & Short: What will the AI agents run on?</a>
+          <div class="meta">
+            <span class="source">CoinDesk</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">Noticia tech destacada en Crypto</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-01691a0f" data-title="₿ Crypto Long & Short: What will the AI agents run on?" data-url="https://www.coindesk.com/coindesk-indices/2026/09/30/crypto-long-and-short-what-will-the-ai-agents-run-on" data-source="CoinDesk" data-category="Tech News — Crypto" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+            <div class="category">
+              <h3>Tech News — IA y Modelos</h3>
+              
+        <article class="card" data-article-id="tech-02dca4ba">
+          
+          <a class="title" href="https://github.com/thu-pacman/chitu" target="_blank" rel="noopener">🧠 thu-pacman/chitu: High-performance inference framework for large language models, focusing on efficiency, flexibility, and availability.</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">High-performance inference framework for large language models, focusing on efficiency, flexibility, and availability.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-02dca4ba" data-title="🧠 thu-pacman/chitu: High-performance inference framework for large language models, focusing on efficiency, flexibility, and availability." data-url="https://github.com/thu-pacman/chitu" data-source="github-trending" data-category="Tech News — IA y Modelos" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-04cfdfea">
+          
+          <a class="title" href="https://github.com/sgl-project/sglang" target="_blank" rel="noopener">🧠 sgl-project/sglang: SGLang is a high-performance serving framework for large language models and multimodal models.</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">SGLang is a high-performance serving framework for large language models and multimodal models.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-04cfdfea" data-title="🧠 sgl-project/sglang: SGLang is a high-performance serving framework for large language models and multimodal models." data-url="https://github.com/sgl-project/sglang" data-source="github-trending" data-category="Tech News — IA y Modelos" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-03d22d3f">
+          
+          <a class="title" href="https://github.com/yamadashy/repomix" target="_blank" rel="noopener">🧠 yamadashy/repomix: 📦 Repomix is a powerful tool that packs your entire repository into a single, AI-friendly file. Perfect for when you need to feed your codebase to Large Language Models (LLMs) or other AI tools like C</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">📦 Repomix is a powerful tool that packs your entire repository into a single, AI-friendly file. Perfect for when you need to feed your codebase to Large Language Models (LLMs) or other AI tools like C</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-03d22d3f" data-title="🧠 yamadashy/repomix: 📦 Repomix is a powerful tool that packs your entire repository into a single, AI-friendly file. Perfect for when you need to feed your codebase to Large Language Models (LLMs) or other AI tools like C" data-url="https://github.com/yamadashy/repomix" data-source="github-trending" data-category="Tech News — IA y Modelos" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-03aad0e3">
+          
+          <a class="title" href="https://deepmind.google/blog/introducing-synthid-bio/" target="_blank" rel="noopener">🧠 Introducing SynthID Bio</a>
+          <div class="meta">
+            <span class="source">Google DeepMind Blog</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">Noticia tech destacada en IA y Modelos</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-03aad0e3" data-title="🧠 Introducing SynthID Bio" data-url="https://deepmind.google/blog/introducing-synthid-bio/" data-source="Google DeepMind Blog" data-category="Tech News — IA y Modelos" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+            <div class="category">
+              <h3>Tech News — Tech Global</h3>
+              
+        <article class="card" data-article-id="tech-036c08ae">
+          
+          <a class="title" href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener">🚀 rohitg00/ai-engineering-from-scratch: Learn it. Build it. Ship it for others.</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">Learn it. Build it. Ship it for others.</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-036c08ae" data-title="🚀 rohitg00/ai-engineering-from-scratch: Learn it. Build it. Ship it for others." data-url="https://github.com/rohitg00/ai-engineering-from-scratch" data-source="github-trending" data-category="Tech News — Tech Global" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-012ca715">
+          
+          <a class="title" href="https://github.com/tensorflow/tensorflow" target="_blank" rel="noopener">🚀 tensorflow/tensorflow: An Open Source Machine Learning Framework for Everyone</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">An Open Source Machine Learning Framework for Everyone</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-012ca715" data-title="🚀 tensorflow/tensorflow: An Open Source Machine Learning Framework for Everyone" data-url="https://github.com/tensorflow/tensorflow" data-source="github-trending" data-category="Tech News — Tech Global" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-04d0adad">
+          
+          <a class="title" href="https://github.com/huggingface/transformers" target="_blank" rel="noopener">🚀 huggingface/transformers: 🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. </a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. </p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-04d0adad" data-title="🚀 huggingface/transformers: 🤗 Transformers: the model-definition framework for state-of-the-art machine learning models in text, vision, audio, and multimodal models, for both inference and training. " data-url="https://github.com/huggingface/transformers" data-source="github-trending" data-category="Tech News — Tech Global" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-030e7f6e">
+          
+          <a class="title" href="https://github.com/ultralytics/ultralytics" target="_blank" rel="noopener">🚀 ultralytics/ultralytics: Ultralytics YOLO27, YOLO26, YOLO11, YOLOv8 — object detection, instance segmentation, semantic segmentation, image classification, pose estimation, object tracking</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">Ultralytics YOLO27, YOLO26, YOLO11, YOLOv8 — object detection, instance segmentation, semantic segmentation, image classification, pose estimation, object tracking</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-030e7f6e" data-title="🚀 ultralytics/ultralytics: Ultralytics YOLO27, YOLO26, YOLO11, YOLOv8 — object detection, instance segmentation, semantic segmentation, image classification, pose estimation, object tracking" data-url="https://github.com/ultralytics/ultralytics" data-source="github-trending" data-category="Tech News — Tech Global" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="tech-051428c8">
+          
+          <a class="title" href="https://github.com/roboflow/supervision" target="_blank" rel="noopener">🚀 roboflow/supervision: We write your reusable computer vision tools. 💜</a>
+          <div class="meta">
+            <span class="source">github-trending</span>
+            <span class="dot"></span>
+            <span>30/09/2026 · 15:25</span>
+            <span class="badge today">hoy</span>
+          </div>
+          <p class="summary">We write your reusable computer vision tools. 💜</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="tech-051428c8" data-title="🚀 roboflow/supervision: We write your reusable computer vision tools. 💜" data-url="https://github.com/roboflow/supervision" data-source="github-trending" data-category="Tech News — Tech Global" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+          </div>
+        </section>
+        
+        <section class="date-section" data-date="2026-09-29">
+          <div class="date-header" aria-expanded="false" tabindex="0" role="button">
+            <h2>martes 29 de septiembre de 2026</h2>
+            <span class="count">6 noticias</span>
+            <span class="date-toggle" aria-hidden="true"><span class="chevron">▾</span> Mostrar</span>
+          </div>
+          <div class="date-divider hidden"></div>
+          <div class="date-content collapsed">
+            
+            <div class="category">
+              <h3>Fintech y Regulación</h3>
+              
+        <article class="card" data-article-id="">
+          
+          <a class="title" href="https://www.theclinic.cl/2026/01/22/los-detalles-del-salto-que-dio-tenpo-para-lograr-convertirse-en-el-primer-banco-totalmente-digital-de-chile/" target="_blank" rel="noopener">Los detalles del salto que dio Tenpo para lograr convertirse en el primer banco totalmente digital de Chile</a>
+          <div class="meta">
+            <span class="source">theclinic.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Los detalles del salto que dio Tenpo para lograr convertirse en el primer banco totalmente digital de Chile URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="" data-title="Los detalles del salto que dio Tenpo para lograr convertirse en el primer banco totalmente digital de Chile" data-url="https://www.theclinic.cl/2026/01/22/los-detalles-del-salto-que-dio-tenpo-para-lograr-convertirse-en-el-primer-banco-totalmente-digital-de-chile/" data-source="theclinic.cl" data-category="Fintech y Regulación" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+            <div class="category">
+              <h3>Inteligencia Artificial en Banca Chile</h3>
+              
+        <article class="card" data-article-id="">
+          
+          <a class="title" href="https://www.latercera.com/pulso/noticia/cmf-otorga-autorizacion-de-funcionamiento-a-tenpo-bank-chile/" target="_blank" rel="noopener">CMF autoriza funcionamiento de Tenpo Bank Chile y se convierte en el primer neobanco del país - La Tercera</a>
+          <div class="meta">
+            <span class="source">latercera.com</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: CMF autoriza funcionamiento de Tenpo Bank Chile y se convierte en el primer neobanco del país - La Tercera URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="" data-title="CMF autoriza funcionamiento de Tenpo Bank Chile y se convierte en el primer neobanco del país - La Tercera" data-url="https://www.latercera.com/pulso/noticia/cmf-otorga-autorizacion-de-funcionamiento-a-tenpo-bank-chile/" data-source="latercera.com" data-category="Inteligencia Artificial en Banca Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="">
+          
+          <a class="title" href="https://anda.cl/mago-mercado-pago-chile-asistente-inteligencia-artificial/" target="_blank" rel="noopener">Mago de Mercado Pago en Chile: asistente con IA</a>
+          <div class="meta">
+            <span class="source">anda.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Mago de Mercado Pago en Chile: asistente con IA URL: https://anda.cl/mago-mercado-pago-chile-asistente-inteligencia-artificial/ ============================================================ Mago de Mercado Pago…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="" data-title="Mago de Mercado Pago en Chile: asistente con IA" data-url="https://anda.cl/mago-mercado-pago-chile-asistente-inteligencia-artificial/" data-source="anda.cl" data-category="Inteligencia Artificial en Banca Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="">
+          
+          <a class="title" href="https://idocs.alipay.com/intl-website/intl-website/en/ant-international-launches-full-stack-ai-native-solutions-for-payment-account-fx-treasury-and-growth-operations-for-global-businesses" target="_blank" rel="noopener">Ant International Launches Industry's First Full-Stack AI-Native Solutions for Payment, Account, FX, Treasury and Growth Operations for Global Businesses | en</a>
+          <div class="meta">
+            <span class="source">idocs.alipay.com</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">============================================================ Título: Ant International Launches Industry's First Full-Stack AI-Native Solutions for Payment, Account, FX, Treasury and Growth Operations for Global Businesses | en URL:…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="" data-title="Ant International Launches Industry's First Full-Stack AI-Native Solutions for Payment, Account, FX, Treasury and Growth Operations for Global Businesses | en" data-url="https://idocs.alipay.com/intl-website/intl-website/en/ant-international-launches-full-stack-ai-native-solutions-for-payment-account-fx-treasury-and-growth-operations-for-global-businesses" data-source="idocs.alipay.com" data-category="Inteligencia Artificial en Banca Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="">
+          
+          <a class="title" href="https://www.scotiabankchile.cl/Personas/sala-de-prensa-2026/scotiaidea-2025" target="_blank" rel="noopener">ScotiaIDEA 2025</a>
+          <div class="meta">
+            <span class="source">scotiabankchile.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">ScotiaIDEA 2025 # Las nuevas tecnologías que permiten reducir riesgos y 'ahorrar tiempo' protagonizaron ScotiaIDEA 2025 El 17 de diciembre, Scotiabank realizó el lanzamiento de ScotiaIDEA , iniciativa que busca potenciar la innovación dentro del banco, transformando ideas en…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="" data-title="ScotiaIDEA 2025" data-url="https://www.scotiabankchile.cl/Personas/sala-de-prensa-2026/scotiaidea-2025" data-source="scotiabankchile.cl" data-category="Inteligencia Artificial en Banca Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+        <article class="card" data-article-id="">
+          
+          <a class="title" href="https://cmfchile.cl/portal/principal/613/w3-propertyvalue-43589.html" target="_blank" rel="noopener">Información de Fiscalizados y otras instituciones registradas</a>
+          <div class="meta">
+            <span class="source">cmfchile.cl</span>
+            <span class="dot"></span>
+            <span></span>
+            
+          </div>
+          <p class="summary">Fintec: tecnología financiera - CMF Chile - Comisión para el Mercado Financiero Chile (portal) Contenido principal **Buscar * Podcast "Cuidando Mis Finanzas"InstagramFacebookYoutubeLinkedinWhatsAppXIcono English overviewEnglish overview * La CMF Presentación Qué es la CMFConsejo…</p>
+          <div class="rating">
+            <span>Puntuar:</span>
+            <span class="stars" data-article-id="" data-title="Información de Fiscalizados y otras instituciones registradas" data-url="https://cmfchile.cl/portal/principal/613/w3-propertyvalue-43589.html" data-source="cmfchile.cl" data-category="Inteligencia Artificial en Banca Chile" data-initial-rating="0">
+              <span class="star" data-stars="1" title="1 estrella">★</span><span class="star" data-stars="2" title="2 estrellas">★</span><span class="star" data-stars="3" title="3 estrellas">★</span><span class="star" data-stars="4" title="4 estrellas">★</span><span class="star" data-stars="5" title="5 estrellas">★</span>
+            </span>
+            <span class="feedback">✓ Guardado</span>
+          </div>
+        </article>
+        
+            </div>
+            
+          </div>
+        </section>
+        
     </main>
     <footer>
-      Generado automáticamente · 2026 · <a href="https://github.com/draco-agent/tech-news-digest">Powered by OpenClaw</a>
+      Generado automáticamente · 2026
     </footer>
   </div>
+  <script>
+    (function() {
+      document.querySelectorAll('.date-header').forEach(function(header) {
+        function toggle() {
+          var expanded = header.getAttribute('aria-expanded') === 'true';
+          var section = header.closest('.date-section');
+          var divider = section.querySelector('.date-divider');
+          var content = section.querySelector('.date-content');
+          var toggleLabel = header.querySelector('.date-toggle');
+          if (expanded) {
+            header.setAttribute('aria-expanded', 'false');
+            if (divider) divider.classList.add('hidden');
+            content.classList.add('collapsed');
+            if (toggleLabel) toggleLabel.innerHTML = '<span class="chevron">▾</span> Mostrar';
+          } else {
+            header.setAttribute('aria-expanded', 'true');
+            if (divider) divider.classList.remove('hidden');
+            content.classList.remove('collapsed');
+            if (toggleLabel) toggleLabel.innerHTML = '<span class="chevron">▾</span> Ocultar';
+          }
+        }
+        header.addEventListener('click', toggle);
+        header.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggle();
+          }
+        });
+      });
+    })();
+  </script>
+  <script>
+    (function() {
+      var SUPABASE_URL = 'https://kmezymgnxyhsojruznmn.supabase.co';
+      var SUPABASE_ANON_KEY = 'sb_publishable_qMS6zyfQ5tH3GW9eUT9M0w_5T4TsYgs';
+      var TABLE = 'newsletter_ratings';
+      if (!SUPABASE_ANON_KEY) return;
+
+      function makeHeaders(extra) {
+        var h = {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        };
+        if (extra) { for (var k in extra) { h[k] = extra[k]; } }
+        return h;
+      }
+
+      function saveRating(articleId, articleUrl, title, source, category, stars) {
+        var payload = JSON.stringify({
+          article_id: articleId,
+          article_url: articleUrl,
+          title: title,
+          source: source,
+          category: category,
+          stars: stars
+        });
+        var deleteUrl = SUPABASE_URL + '/rest/v1/' + TABLE + '?article_id=eq.' + encodeURIComponent(articleId);
+        return fetch(deleteUrl, { method: 'DELETE', headers: makeHeaders() }).then(function() {
+          return fetch(SUPABASE_URL + '/rest/v1/' + TABLE, {
+            method: 'POST',
+            headers: makeHeaders({'Prefer': 'return=minimal'}),
+            body: payload
+          });
+        });
+      }
+
+      function loadRatings() {
+        var url = SUPABASE_URL + '/rest/v1/' + TABLE + '?select=article_id,stars,rated_at&order=rated_at.desc';
+        return fetch(url, { method: 'GET', headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY } })
+          .then(function(resp) { return resp.json(); })
+          .then(function(rows) {
+            var map = {};
+            rows.forEach(function(row) {
+              var id = row.article_id;
+              if (id && !(id in map)) { map[id] = row.stars; }
+            });
+            return map;
+          })
+          .catch(function(err) {
+            console.error('Error cargando calificaciones:', err);
+            return {};
+          });
+      }
+
+      function applyInitialRatings(map) {
+        document.querySelectorAll('.stars').forEach(function(container) {
+          var articleId = container.getAttribute('data-article-id');
+          var value = map[articleId];
+          if (articleId && value) {
+            container.setAttribute('data-initial-rating', value);
+            container.dispatchEvent(new CustomEvent('ratingLoaded', { detail: { value: value } }));
+          }
+        });
+      }
+
+      loadRatings().then(applyInitialRatings);
+
+      document.querySelectorAll('.stars').forEach(function(container) {
+        var articleId = container.getAttribute('data-article-id');
+        var articleUrl = container.getAttribute('data-url');
+        var title = container.getAttribute('data-title');
+        var source = container.getAttribute('data-source');
+        var category = container.getAttribute('data-category');
+        var stars = container.querySelectorAll('.star');
+        var feedback = container.parentElement.querySelector('.feedback');
+        var selectedValue = parseInt(container.getAttribute('data-initial-rating') || '0', 10);
+        if (isNaN(selectedValue)) selectedValue = 0;
+
+        function setVisual(value) {
+          stars.forEach(function(s) {
+            var starValue = parseInt(s.getAttribute('data-stars'), 10);
+            s.classList.toggle('rated', starValue <= value);
+            s.classList.toggle('active', starValue === value);
+          });
+        }
+
+        function restoreVisual() { setVisual(selectedValue); }
+
+        restoreVisual();
+
+        container.addEventListener('ratingLoaded', function(e) {
+          selectedValue = e.detail.value;
+          setVisual(selectedValue);
+        });
+
+        stars.forEach(function(star) {
+          star.addEventListener('mouseenter', function() { setVisual(parseInt(star.getAttribute('data-stars'), 10)); });
+          star.addEventListener('mouseleave', restoreVisual);
+          star.addEventListener('click', function() {
+            var value = parseInt(star.getAttribute('data-stars'), 10);
+            selectedValue = value;
+            setVisual(value);
+            saveRating(articleId, articleUrl, title, source, category, value).then(function(resp) {
+              if (resp && resp.ok) {
+                if (feedback) { feedback.classList.add('visible'); setTimeout(function() { feedback.classList.remove('visible'); }, 2000); }
+              } else if (resp) {
+                console.error('Error guardando calificación:', resp.statusText);
+              }
+            }).catch(function(err) { console.error('Error guardando calificación:', err); });
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

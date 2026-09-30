@@ -559,9 +559,14 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
         ]
         if any(t in combined for t in job_terms):
             continue
-        if any(t in url.lower() for t in ["trabajo", "empleo", "jobs", "careers", "vacante", "ofertas-laborales"]):
+        source = normalize_source(url) or ""
+        if source in BLOCKED_DOMAINS:
             continue
         if any(b in source for b in ["trabajo", "empleo", "laborum", "computrabajo", "chiletrabajos"]):
+            continue
+        if any(b in source for b in ["porn", "xxx", "bet", "casino", "viagra", "onlyfans"]):
+            continue
+        if any(t in url.lower() for t in ["trabajo", "empleo", "jobs", "careers", "vacante", "ofertas-laborales"]):
             continue
         lifestyle_terms = [
             "cómo obtener", "beneficio del minvu", "vivienda", "hipoteca", "arriendo",
@@ -569,11 +574,6 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
             "casas en venta", "departamentos en venta", "barrios", "comuna",
         ]
         if any(t in combined for t in lifestyle_terms):
-            continue
-        source = normalize_source(url)
-        if source in BLOCKED_DOMAINS:
-            continue
-        if any(b in source for b in ["porn", "xxx", "bet", "casino", "viagra", "onlyfans"]):
             continue
         summary = extract_summary(content)
         if not is_quality_summary(summary, title):
