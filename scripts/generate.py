@@ -294,6 +294,71 @@ def first_substantial_paragraph(text: str, min_len: int = 80, max_len: int = 260
     return ""
 
 
+def translate_with_ollama(text: str, model: str = "llama3.2:latest", max_input: int = 1200) -> str:
+    """Translate English text to Spanish using local Ollama HTTP API (fallback)."""
+    text = text.strip()
+    if not text:
+        return ""
+    if len(text) > max_input:
+        text = text[:max_input].rsplit(" ", 1)[0]
+    prompt = (
+        "Eres un traductor profesional. Traduce el siguiente texto del inglés al español de forma natural y precisa. "
+        "Mantén los nombres propios, marcas y términos técnicos sin traducir si es lo común. "
+        "Responde únicamente con la traducción, sin introducción ni explicaciones.\n\n"
+        f"{text}\n\nTraducción al español:"
+    )
+    payload = {
+        "model": model,
+        "prompt": prompt,
+        "stream": False,
+        "options": {"temperature": 0.2, "num_predict": 300},
+    }
+    try:
+        req = urllib.request.Request(
+            "http://localhost:11434/api/generate",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=120) as resp:
+            result = json.loads(resp.read().decode("utf-8"))
+        translation = result.get("response", "").strip()
+        translation = re.sub(r"^(Traducción al español:?\s*|Aquí tienes la traducción:?\s*)", "", translation, flags=re.IGNORECASE).strip()
+        translation = re.sub(r'"', "", translation)
+        return translation
+    except Exception as e:
+        print(f"Ollama translate exception: {e}")
+        return ""
+
+
+def translate_to_spanish(text: str) -> str:
+    """Translate English text to Spanish using deep-translator (Google)."""
+    text = text.strip()
+    if not text:
+        return ""
+    try:
+        from deep_translator import GoogleTranslator
+        translator = GoogleTranslator(source="en", target="es")
+        return translator.translate(text)
+    except Exception as e:
+        print(f"Deep translator exception: {e}")
+        return ""
+
+
+def is_english_text(text: str) -> bool:
+    """Heuristic to detect if a text is in English."""
+    if not text:
+        return False
+    text = text.lower()
+    if "| en" in text or "| english" in text:
+        return True
+    en_markers = [" the ", " and ", " for ", " with ", " launches ", " bank ", " fintech ", " payment ", " announces ", " solution ", " platform ", " framework ", " model ", " ai ", " llm ", " agent ", " api "]
+    es_markers = [" el ", " la ", " los ", " las ", " de ", " del ", " para ", " con ", " banco ", " fintech ", " pago ", " anuncia ", " solución ", " plataforma ", " modelo ", " ia "]
+    en_count = sum(1 for m in en_markers if m in text)
+    es_count = sum(1 for m in es_markers if m in text)
+    return en_count > es_count and en_count >= 2
+
+
 def summarize_with_ollama(text: str, model: str = "llama3.2:latest", max_input: int = 1800) -> str:
     """Summarize article text using local Ollama HTTP API."""
     text = text.strip()
@@ -575,7 +640,23 @@ def dedupe_and_merge(all_items: List[Dict[str, Any]], seen: set) -> List[Dict[st
         ]
         if any(t in combined for t in lifestyle_terms):
             continue
+
+        # Translate English titles/summaries to Spanish
+        if is_english_text(title):
+            translated_title = translate_to_spanish(title)
+            if not translated_title:
+                translated_title = translate_with_ollama(title)
+            if translated_title:
+                title = translated_title
+                title = re.sub(r"\s*\|\s*en\s*$", "", title, flags=re.IGNORECASE).strip()
+                item["title"] = title
         summary = extract_summary(content)
+        if is_english_text(summary):
+            translated_summary = translate_to_spanish(summary)
+            if not translated_summary:
+                translated_summary = translate_with_ollama(summary)
+            if translated_summary:
+                summary = translated_summary
         if not is_quality_summary(summary, title):
             continue
         if any(is_duplicate_topic(title, kt) for kt in kept_titles):
